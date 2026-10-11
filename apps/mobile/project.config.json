@@ -1,0 +1,8 @@
+{
+  "miniprogramRoot": "dist/",
+  "projectname": "daystep-mobile",
+  "description": "DayStep V6.0 mobile client",
+  "appid": "touristappid",
+  "setting": { "urlCheck": false, "es6": true, "postcss": true, "minified": true },
+  "compileType": "miniprogram"
+}

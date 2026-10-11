@@ -1,0 +1,16 @@
+:root {
+  --ds-brand-primary: #315f49;
+  --ds-brand-secondary: #6e9b80;
+  --ds-canvas-mobile: #f5f2ea;
+  --ds-canvas-desktop: #f6f8f5;
+  --ds-surface: #ffffff;
+  --ds-surface-soft: #e9e5dc;
+  --ds-text-primary: #244e3a;
+  --ds-text-secondary: #66736b;
+  --ds-border: #e5eae5;
+  --ds-purple: #ddd3f8;
+  --ds-warning: #c99c58;
+  --ds-danger: #c57973;
+  --ds-shadow: 0 10px 30px rgba(36, 78, 58, 0.08);
+  --ds-font: Inter, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+}
