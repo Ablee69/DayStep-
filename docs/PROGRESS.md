@@ -83,6 +83,15 @@ Status: local release candidate complete.
 - Mobile bottom navigation exposes accessible names, and versioned data export has a focused boundary test.
 - No merge, force push, or production deployment has been performed.
 
+## Desktop management expansion
+
+Status: complete for the current local dashboard scope.
+
+- Student management provides searchable student selection, learning metrics, recent activity, invitation entry, and a direct path to pending review work.
+- Plan management provides status filters, searchable plan rows, progress and deadline context, and a working entry into the existing create-plan flow.
+- Goal management presents the shared goal hierarchy as expandable long-term goals with stage milestones and progress.
+- Browser acceptance verified student switching, empty plan filtering, create-plan modal routing, and goal-tree expansion.
+
 ## Next production work
 
 - Select and configure the cloud backend, authentication provider, database, and file storage.

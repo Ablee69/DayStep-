@@ -16,6 +16,9 @@ Date: 2026-10-12
 - [x] Graceful local-storage failure handling
 - [x] Accessible names for all mobile bottom-navigation actions
 - [x] Persisted review annotations and batch review action
+- [x] Desktop student management and student-detail interaction
+- [x] Desktop plan filtering and create-plan entry
+- [x] Desktop expandable goal and milestone view
 - [x] No paid or third-party AI API in the import pipeline
 - [x] No force push or main-branch merge
 

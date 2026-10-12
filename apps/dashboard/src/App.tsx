@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import type { Assignment } from '@daystep/domain';
 
-type View = 'dashboard' | 'review';
+type View = 'dashboard' | 'students' | 'plans' | 'goals' | 'review';
 type DashboardPanel = 'new-plan' | 'students' | 'insight' | 'student' | 'notifications' | null;
 
 const assignments: Assignment[] = [
@@ -55,7 +55,7 @@ function Sidebar({ view, setView }: { view: View; setView: (view: View) => void 
     <div className="brand"><span className="brand-mark">D</span><span>DayStep</span></div>
     <nav aria-label="主要导航">
       <button className={view === 'dashboard' ? 'active' : ''} onClick={() => setView('dashboard')}><LayoutDashboard />总览</button>
-      <button disabled title="下一阶段开放"><Users />学生</button><button disabled title="下一阶段开放"><CalendarDays />计划</button><button disabled title="下一阶段开放"><BookOpenCheck />目标</button>
+      <button className={view === 'students' ? 'active' : ''} onClick={() => setView('students')}><Users />学生</button><button className={view === 'plans' ? 'active' : ''} onClick={() => setView('plans')}><CalendarDays />计划</button><button className={view === 'goals' ? 'active' : ''} onClick={() => setView('goals')}><BookOpenCheck />目标</button>
       <button className={view === 'review' ? 'active' : ''} onClick={() => setView('review')}><ClipboardCheck />作业批改<span className="nav-count">3</span></button>
       <button disabled title="下一阶段开放"><MessageSquareText />反馈</button>
     </nav>
@@ -82,10 +82,10 @@ function DashboardDialog({ panel, studentName, close, savePlan, sendInvite, invi
   return <div className="dialog-backdrop" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && close()}><section className="dashboard-dialog" role="dialog" aria-modal="true" aria-labelledby="dialog-title"><button className="icon-button dialog-close" aria-label="关闭" onClick={close}><X /></button><span className="eyebrow">{content.eyebrow}</span><h2 id="dialog-title">{content.title}</h2><div className="dialog-body">{content.body}</div><div className="dialog-actions"><button className="ghost-button" onClick={close}>取消</button>{panel === 'new-plan' && <button className="publish" disabled={!planTitle.trim()} onClick={() => savePlan(planStudent, planTitle.trim(), deadline)}>保存计划</button>}{panel === 'students' && <button className="publish" disabled={!inviteEmail.includes('@')} onClick={() => sendInvite(inviteEmail.trim().toLowerCase())}>发送邀请</button>}</div></section></div>;
 }
 
-function TeacherDashboard({ openReview }: { openReview: () => void }) {
+function TeacherDashboard({ openReview, createOnOpen = false }: { openReview: () => void; createOnOpen?: boolean }) {
   const [query, setQuery] = useState('');
   const [filter, setFilter] = useState<StudentFilter>('all');
-  const [panel, setPanel] = useState<DashboardPanel>(null);
+  const [panel, setPanel] = useState<DashboardPanel>(createOnOpen ? 'new-plan' : null);
   const [selectedStudent, setSelectedStudent] = useState('');
   const [monthOffset, setMonthOffset] = useState(0);
   const [projects, setProjects] = useState(() => readStored(PROJECTS_KEY, initialProjects));
@@ -153,7 +153,42 @@ function ReviewWorkspace({ close }: { close: () => void }) {
   </main></>;
 }
 
+function StudentsWorkspace({ openReview }: { openReview: () => void }) {
+  const [query, setQuery] = useState('');
+  const [selected, setSelected] = useState(students[0].name);
+  const [inviteEmail, setInviteEmail] = useState('');
+  const [invites, setInvites] = useState(() => readStored<string[]>(INVITES_KEY, []));
+  const visible = students.filter((student) => `${student.name} ${student.course}`.toLocaleLowerCase('zh-CN').includes(query.trim().toLocaleLowerCase('zh-CN')));
+  const current = students.find((student) => student.name === selected) || students[0];
+  const invite = () => { const email = inviteEmail.trim().toLowerCase(); if (!email.includes('@') || invites.includes(email)) return; const next = [...invites, email]; setInvites(next); localStorage.setItem(INVITES_KEY, JSON.stringify(next)); setInviteEmail(''); };
+  return <><Topbar title="学生管理" query={query} onQueryChange={setQuery} /><main className="management-page"><header className="page-heading"><div><span className="eyebrow">教师工作空间</span><h1>学生管理</h1><p>查看学习状态、邀请成员并进入作业批改。</p></div><div className="invite-inline"><input aria-label="学生邮箱" placeholder="student@example.com" value={inviteEmail} onChange={(event) => setInviteEmail(event.target.value)} /><button disabled={!inviteEmail.includes('@')} onClick={invite}>发送邀请</button></div></header><section className="student-management-grid"><div className="directory-panel"><div className="directory-summary"><strong>{students.length}</strong><span>正式学生</span><strong>{invites.length}</strong><span>待接受邀请</span></div><div className="directory-list">{visible.map((student) => <button className={student.name === current.name ? 'selected' : ''} key={student.name} onClick={() => setSelected(student.name)}><span className="project-avatar" style={{ background: student.color }}>{student.name.at(0)}</span><span><strong>{student.name}</strong><small>{student.course}</small></span><b>{student.progress}%</b></button>)}</div>{invites.length > 0 && <div className="pending-invites"><span className="eyebrow">待加入</span>{invites.map((email) => <div key={email}><span>{email}</span><b>邀请已发送</b></div>)}</div>}</div><article className="student-detail-panel"><div className="student-detail-head"><span className="large-avatar" style={{ background: current.color }}>{current.name.at(0)}</span><div><span className="eyebrow">学生档案</span><h2>{current.name}</h2><p>{current.course}</p></div><button onClick={openReview}>查看待批改</button></div><div className="detail-metrics"><div><strong>{current.progress}%</strong><span>计划进度</span></div><div><strong>{current.score}</strong><span>本周评分</span></div><div><strong>8 天</strong><span>连续打卡</span></div><div><strong>{current.attention ? '需关注' : '稳定'}</strong><span>学习状态</span></div></div><section className="activity-panel"><span className="eyebrow">最近动态</span><div><Check /><span><strong>完成今日阅读任务</strong><small>今天 09:42 · 45 分钟</small></span></div><div><Upload /><span><strong>提交阶段作业</strong><small>昨天 21:06 · 2 个附件</small></span></div><div><CalendarDays /><span><strong>确认下周计划</strong><small>10 月 10 日 · 共 6 项任务</small></span></div></section></article></section></main></>;
+}
+
+function PlansWorkspace({ createPlan }: { createPlan: () => void }) {
+  const [status, setStatus] = useState<'all' | 'active' | 'done'>('all');
+  const [query, setQuery] = useState('');
+  const projects = readStored<StudentProject[]>(PROJECTS_KEY, initialProjects);
+  const visible = projects.filter((project) => (!query.trim() || `${project.title} ${project.name} ${project.course}`.toLocaleLowerCase('zh-CN').includes(query.trim().toLocaleLowerCase('zh-CN'))) && (status === 'all' || (status === 'done' ? project.progress === 100 : project.progress < 100)));
+  return <><Topbar title="计划管理" query={query} onQueryChange={setQuery} onNewPlan={createPlan} /><main className="management-page"><header className="page-heading"><div><span className="eyebrow">计划中心</span><h1>学习计划</h1><p>统一管理手动创建和标准导入的计划。</p></div><button className="page-primary" onClick={createPlan}>＋ 新建计划</button></header><nav className="management-tabs"><button className={status === 'all' ? 'active' : ''} onClick={() => setStatus('all')}>全部 {projects.length}</button><button className={status === 'active' ? 'active' : ''} onClick={() => setStatus('active')}>进行中 {projects.filter((item) => item.progress < 100).length}</button><button className={status === 'done' ? 'active' : ''} onClick={() => setStatus('done')}>已完成 {projects.filter((item) => item.progress === 100).length}</button></nav><section className="plan-table"><div className="plan-table-head"><span>计划与学生</span><span>进度</span><span>目标日期</span><span>本周状态</span></div>{visible.map((plan) => <article key={plan.id}><div><span className="project-avatar" style={{ background: plan.color }}>{plan.name.at(0)}</span><span><strong>{plan.title}</strong><small>{plan.name} · {plan.course}</small></span></div><div className="table-progress"><span>{plan.progress}%</span><div className="bar"><i style={{ width: `${plan.progress}%` }} /></div></div><time>{plan.deadline || '2026-12-31'}</time><span className={plan.attention ? 'status-chip attention' : 'status-chip'}>{plan.attention ? '需要关注' : '按计划推进'}</span></article>)}{visible.length === 0 && <div className="management-empty"><Inbox /><strong>没有匹配的计划</strong><span>更换搜索词或状态筛选</span></div>}</section></main></>;
+}
+
+function GoalsWorkspace() {
+  const projects = readStored<StudentProject[]>(PROJECTS_KEY, initialProjects);
+  const [expanded, setExpanded] = useState(projects[0]?.id || '');
+  const overall = projects.length ? Math.round(projects.reduce((sum, item) => sum + item.progress, 0) / projects.length) : 0;
+  return <><Topbar title="目标管理" /><main className="management-page"><header className="page-heading"><div><span className="eyebrow">目标地图</span><h1>从长期目标到每日行动</h1><p>计划、阶段和任务使用同一套目标层级。</p></div><div className="overall-progress"><strong>{overall}%</strong><span>整体完成率</span></div></header><section className="goal-overview"><div><strong>{projects.length}</strong><span>长期目标</span></div><div><strong>{projects.length * 3}</strong><span>阶段里程碑</span></div><div><strong>{projects.length * 8}</strong><span>执行任务</span></div><div><strong>{projects.filter((item) => item.attention).length}</strong><span>待关注目标</span></div></section><section className="desktop-goal-tree">{projects.map((goal, index) => <article key={goal.id}><button className="goal-root" onClick={() => setExpanded(expanded === goal.id ? '' : goal.id)}><span className="goal-index">{String(index + 1).padStart(2, '0')}</span><span><small>长期目标 · {goal.name}</small><strong>{goal.title}</strong></span><div className="table-progress"><span>{goal.progress}%</span><div className="bar"><i style={{ width: `${goal.progress}%` }} /></div></div><ChevronRight className={expanded === goal.id ? 'rotated' : ''} /></button>{expanded === goal.id && <div className="goal-branches"><div><span>阶段 1</span><strong>基础建立</strong><small>完成核心知识与执行习惯</small><b>{Math.min(100, goal.progress + 14)}%</b></div><div><span>阶段 2</span><strong>专项强化</strong><small>按弱项拆分训练任务</small><b>{goal.progress}%</b></div><div><span>阶段 3</span><strong>成果与复盘</strong><small>提交成果并调整下一周期</small><b>{Math.max(0, goal.progress - 28)}%</b></div></div>}</article>)}</section></main></>;
+}
+
 export function App() {
   const [view, setView] = useState<View>('dashboard');
-  return <div className="app-shell"><Sidebar view={view} setView={setView} /><div className="workspace">{view === 'dashboard' ? <TeacherDashboard openReview={() => setView('review')} /> : <ReviewWorkspace close={() => setView('dashboard')} />}</div></div>;
+  const [dashboardCreate, setDashboardCreate] = useState(false);
+  const navigate = (next: View) => { setDashboardCreate(false); setView(next); };
+  const renderView = () => {
+    if (view === 'dashboard') return <TeacherDashboard key={dashboardCreate ? 'create' : 'default'} createOnOpen={dashboardCreate} openReview={() => navigate('review')} />;
+    if (view === 'students') return <StudentsWorkspace openReview={() => setView('review')} />;
+    if (view === 'plans') return <PlansWorkspace createPlan={() => { setDashboardCreate(true); setView('dashboard'); }} />;
+    if (view === 'goals') return <GoalsWorkspace />;
+    return <ReviewWorkspace close={() => setView('dashboard')} />;
+  };
+  return <div className="app-shell"><Sidebar view={view} setView={navigate} /><div className="workspace">{renderView()}</div></div>;
 }
