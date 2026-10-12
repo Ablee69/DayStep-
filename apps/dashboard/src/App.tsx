@@ -225,5 +225,5 @@ export function App() {
     if (view === 'settings') return <SettingsWorkspace />;
     return <ReviewWorkspace close={() => setView('dashboard')} />;
   };
-  return <div className="app-shell"><Sidebar view={view} setView={navigate} /><div className="workspace">{renderView()}</div></div>;
+  return <div className="app-shell"><Sidebar view={view} setView={navigate} /><div className="workspace"><div className="view-transition" key={view}>{renderView()}</div></div></div>;
 }
