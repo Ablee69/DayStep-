@@ -2,13 +2,13 @@
 
 ## Source of truth
 
-- `docs/PRD.md` is the sole product requirements baseline for DayStep V6.0.
+- `docs/PRD.md` is the sole product requirements baseline for DayStep V6.2.
 - Files in `references/` are visual references, not product specifications.
 - Do not invent requirements, remove required detail, or claim untested functionality is complete.
 
 ## Current scope
 
-Phase A is limited to architecture preparation and six interactive UI pages:
+Phase A delivered six interactive UI pages:
 
 1. Mobile Today
 2. Mobile Goal Map
@@ -17,7 +17,7 @@ Phase A is limited to architecture preparation and six interactive UI pages:
 5. Desktop Teacher Dashboard
 6. Desktop Assignment Review Workspace
 
-Do not expand into Phase B-F without an explicit scope decision.
+The product owner explicitly approved Phase B-D development on `feature/daystep-foundation-phase2`. Phase C prioritizes deterministic Markdown/JSON import without third-party AI APIs.
 
 ## Engineering rules
 
@@ -31,6 +31,6 @@ Do not expand into Phase B-F without an explicit scope decision.
 
 ## Git safety
 
-- Work on `feature/daystep-ui-phase1` unless the product owner approves another branch.
+- Work on `feature/daystep-foundation-phase2` for Phase B-D. Keep Phase A history on `feature/daystep-ui-phase1`.
 - Do not force-push, overwrite `main`, merge, or publish without confirmation.
 - Do not discard unrelated or uncommitted user changes.

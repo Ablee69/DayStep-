@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "daystep.plan.v1",
+  "title": "DayStep Plan v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "sourceType", "goal", "milestones", "issues"],
+  "properties": {
+    "schemaVersion": { "const": "daystep.plan.v1" },
+    "sourceType": { "enum": ["markdown", "json"] },
+    "goal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tempId", "title"],
+      "properties": {
+        "tempId": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "title": { "type": "string", "minLength": 1, "maxLength": 500 },
+        "startDate": { "type": "string", "format": "date" },
+        "endDate": { "type": "string", "format": "date" }
+      }
+    },
+    "milestones": {
+      "type": "array",
+      "maxItems": 200,
+      "items": { "$ref": "#/$defs/milestone" }
+    },
+    "issues": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/issue" }
+    }
+  },
+  "$defs": {
+    "step": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tempId", "title"],
+      "properties": {
+        "tempId": { "type": "string" },
+        "title": { "type": "string", "minLength": 1, "maxLength": 500 },
+        "minutes": { "type": "integer", "minimum": 1, "maximum": 1440 }
+      }
+    },
+    "task": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tempId", "title", "steps"],
+      "properties": {
+        "tempId": { "type": "string" },
+        "title": { "type": "string", "minLength": 1, "maxLength": 500 },
+        "date": { "type": "string", "format": "date" },
+        "durationMinutes": { "type": "integer", "minimum": 1, "maximum": 1440 },
+        "completionCriteria": { "type": "string", "maxLength": 500 },
+        "steps": { "type": "array", "maxItems": 200, "items": { "$ref": "#/$defs/step" } }
+      }
+    },
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tempId", "title", "tasks"],
+      "properties": {
+        "tempId": { "type": "string" },
+        "title": { "type": "string", "minLength": 1, "maxLength": 500 },
+        "tasks": { "type": "array", "maxItems": 500, "items": { "$ref": "#/$defs/task" } }
+      }
+    },
+    "milestone": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tempId", "title", "projects"],
+      "properties": {
+        "tempId": { "type": "string" },
+        "title": { "type": "string", "minLength": 1, "maxLength": 500 },
+        "projects": { "type": "array", "maxItems": 200, "items": { "$ref": "#/$defs/project" } }
+      }
+    },
+    "issue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "severity", "path", "message"],
+      "properties": {
+        "code": { "type": "string" },
+        "severity": { "enum": ["error", "warning", "confirmation"] },
+        "path": { "type": "string" },
+        "message": { "type": "string" }
+      }
+    }
+  }
+}

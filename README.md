@@ -1,6 +1,6 @@
-# DayStep V6.0
+# DayStep V6.2
 
-Cross-platform goal planning and execution platform. Phase A currently contains six interactive UI prototypes backed by typed local fixtures.
+Cross-platform goal planning and execution platform. Phase A provides six interactive UI screens; Phase B-D adds canonical workspace data, deterministic zero-AI plan import, and permission-aware teacher/student workflows.
 
 ## Requirements
 
@@ -42,7 +42,11 @@ pnpm --filter @daystep/mobile build:weapp
 
 H5 output is written to `apps/mobile/dist/h5`; the WeChat mini-program output is written to `apps/mobile/dist/weapp`.
 
+## Plan import
+
+The deterministic import format is documented in [`docs/PLAN_IMPORT.md`](docs/PLAN_IMPORT.md), with a ready-to-use template in [`examples/plan-import-template.md`](examples/plan-import-template.md) and the versioned JSON Schema in [`schemas/daystep-plan.v1.schema.json`](schemas/daystep-plan.v1.schema.json).
+
 ## Current limitations
 
-Phase A uses clearly scoped local fixture data. Authentication, cloud persistence, AI service calls, uploads, grading persistence, and authorization enforcement belong to later phases and are not represented as complete.
+The domain service and permission model run locally without external credentials. Production cloud persistence, identity-provider configuration, object storage, email delivery, and deployment still require environment-specific adapters and credentials; they are not represented as connected.
 
