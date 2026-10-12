@@ -36,6 +36,7 @@
 .revision-callout text { display: block; font-size: 9px; line-height: 1.55; }
 .revision-callout text:first-child { margin-bottom: 4px; color: #9a6833; font-size: 11px; font-weight: 800; }
 .passed-callout { background: #e6f0e6; color: #315f49; font-size: 10px; font-weight: 750; text-align: center; }
+.resubmit-button { width: 100%; height: 44px; margin: 9px 0 0; border: 1px solid #315f49; border-radius: 13px; background: #fff; color: #315f49; font-size: 11px; font-weight: 750; }
 
 .history-summary { display: flex; align-items: center; justify-content: space-between; }
 .history-rate { width: 72px; height: 72px; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 7px solid #d9f05f; border-radius: 50%; }

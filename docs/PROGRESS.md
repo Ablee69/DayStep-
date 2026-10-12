@@ -106,6 +106,15 @@ Status: complete for the local application workflow.
 - Profile exposes clear entry points for feedback and history without crowding the five-action bottom navigation.
 - Browser acceptance verified feedback switching, history month navigation, daily record selection, and weekly/monthly statistics switching.
 
+## Mobile item 10 and delivery item 11
+
+Status: complete for the local application workflow.
+
+- Personal Center is the unified entry for role preferences, reminders, weekly reports, local data export, assignment feedback, and history.
+- Students can explicitly mark requested corrections complete and resubmit from the feedback record.
+- Resubmission state persists locally across refreshes while preserving the original score, teacher comment, and page annotation.
+- The flow remains connected to the existing task detail instead of creating a separate assignment-only task store.
+
 ## Next production work
 
 - Select and configure the cloud backend, authentication provider, database, and file storage.

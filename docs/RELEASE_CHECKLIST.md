@@ -25,6 +25,8 @@ Date: 2026-10-12
 - [x] Mobile assignment-feedback detail and revision flow
 - [x] Mobile statistics weekly/monthly interaction
 - [x] Mobile history calendar and daily record navigation
+- [x] Mobile Personal Center entry points and local preferences
+- [x] Student correction resubmission with original feedback retention
 - [x] No paid or third-party AI API in the import pipeline
 - [x] No force push or main-branch merge
 
