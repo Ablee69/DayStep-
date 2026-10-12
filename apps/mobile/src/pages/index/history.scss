@@ -1,0 +1,69 @@
+.feedback-hero,
+.history-summary {
+  padding: 22px;
+  border-radius: 20px;
+  background: #244e3a;
+  color: #fff;
+}
+
+.feedback-hero .overline,
+.history-summary .overline { color: #bad0c0; }
+.feedback-hero-title,
+.history-streak { display: block; margin: 7px 0 5px; font-size: 22px; font-weight: 800; }
+.feedback-hero > text:last-child,
+.history-summary > view:first-child > text:last-child { font-size: 10px; color: #c7d7cb; }
+
+.mobile-feedback-tabs { display: flex; gap: 8px; margin: 14px 0; overflow-x: auto; }
+.mobile-feedback-tabs button { min-width: 150px; margin: 0; padding: 12px; border: 1px solid #dfe4df; border-radius: 14px; background: #fff; text-align: left; }
+.mobile-feedback-tabs button text { display: block; font-size: 10px; }
+.mobile-feedback-tabs button text:first-child { font-weight: 750; }
+.mobile-feedback-tabs button text:last-child { margin-top: 4px; color: #718078; }
+.mobile-feedback-tabs button.active { border-color: #315f49; background: #e7efe5; }
+.feedback-result-card,
+.history-calendar,
+.history-day { padding: 20px; border-radius: 20px; background: #fff; }
+.feedback-result-head { display: flex; justify-content: space-between; gap: 12px; }
+.feedback-result-head .muted { display: block; margin-top: 5px; }
+.feedback-grade { text-align: right; color: #315f49; }
+.feedback-grade text { display: block; }
+.feedback-grade text:first-child { font-size: 38px; font-weight: 850; line-height: 1; }
+.feedback-grade text:last-child { font-size: 9px; }
+.feedback-message { margin-top: 18px; padding: 14px; border-radius: 13px; background: #f2f5f0; }
+.feedback-message > text:last-child { display: block; font-size: 11px; line-height: 1.65; }
+.annotation-message { border-left: 3px solid #789383; }
+.revision-callout,
+.passed-callout { margin-top: 14px; padding: 14px; border-radius: 13px; background: #f6e9dc; }
+.revision-callout text { display: block; font-size: 9px; line-height: 1.55; }
+.revision-callout text:first-child { margin-bottom: 4px; color: #9a6833; font-size: 11px; font-weight: 800; }
+.passed-callout { background: #e6f0e6; color: #315f49; font-size: 10px; font-weight: 750; text-align: center; }
+
+.history-summary { display: flex; align-items: center; justify-content: space-between; }
+.history-rate { width: 72px; height: 72px; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 7px solid #d9f05f; border-radius: 50%; }
+.history-rate text:first-child { font-size: 17px; font-weight: 850; }
+.history-rate text:last-child { font-size: 8px; color: #bfd0c4; }
+.history-calendar { margin-top: 14px; }
+.history-month { display: grid; grid-template-columns: 36px 1fr 36px; align-items: center; text-align: center; }
+.history-month button { width: 32px; height: 32px; margin: 0; padding: 0; border: 0; border-radius: 8px; background: #eef2ed; }
+.history-month > text { font-size: 13px; font-weight: 800; }
+.history-weekdays,
+.history-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.history-weekdays { margin: 15px 0 6px; }
+.history-weekdays text { text-align: center; color: #78847d; font-size: 9px; }
+.history-days button,
+.history-days > view { height: 38px; margin: 0; padding: 0; border: 0; border-radius: 9px; background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.history-days button text { font-size: 10px; line-height: 10px; }
+.history-days button text:last-child { color: #6e9b80; font-size: 13px; }
+.history-days button.selected { background: #315f49; color: #fff; }
+.history-days button.selected text:last-child { color: #d9f05f; }
+.history-day { margin-top: 14px; }
+.history-task { width: 100%; margin: 8px 0 0; padding: 10px; border: 0; border-top: 1px solid #edf0ed; background: transparent; display: grid; grid-template-columns: 42px 1fr 18px; align-items: center; gap: 10px; text-align: left; }
+.history-task > view:nth-child(2) text { display: block; }
+.history-task > view:nth-child(2) text:first-child { font-size: 11px; font-weight: 750; }
+.history-task > view:nth-child(2) text:last-child { margin-top: 4px; color: #748078; font-size: 9px; }
+
+.profile-shortcuts { position: fixed; z-index: 9; left: 50%; bottom: 80px; transform: translateX(-50%); width: 100%; max-width: 520px; padding: 8px 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: rgba(250, 248, 242, .96); }
+.profile-shortcuts button { margin: 0; padding: 10px; border: 1px solid #dfe4df; border-radius: 13px; background: #fff; display: grid; grid-template-columns: 28px 1fr 12px; align-items: center; gap: 7px; text-align: left; }
+.profile-shortcuts button > text:first-child { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 9px; background: #e2eadb; color: #315f49; font-weight: 800; }
+.profile-shortcuts button > view text { display: block; }
+.profile-shortcuts button > view text:first-child { font-size: 10px; font-weight: 750; }
+.profile-shortcuts button > view text:last-child { margin-top: 2px; color: #748078; font-size: 7px; }

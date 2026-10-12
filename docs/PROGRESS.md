@@ -96,6 +96,16 @@ Status: complete for the current local dashboard scope.
 - Responsive rules cover all six desktop management areas, including narrow sidebar, stacked detail views, compact tables, and touch-sized actions.
 - Browser acceptance verified feedback filtering, settings section switching, saved preference confirmation, and refresh persistence.
 
+## Mobile core pages 7-9
+
+Status: complete for the local application workflow.
+
+- Assignment feedback shows multiple reviewed submissions, scores, teacher comments, page annotations, revision requirements, and links back to the canonical task.
+- Statistics continues to derive weekly and monthly evidence from the shared task collection without a separate reporting store.
+- History Calendar supports month and date selection, completion markers, daily execution records, and navigation into task details.
+- Profile exposes clear entry points for feedback and history without crowding the five-action bottom navigation.
+- Browser acceptance verified feedback switching, history month navigation, daily record selection, and weekly/monthly statistics switching.
+
 ## Next production work
 
 - Select and configure the cloud backend, authentication provider, database, and file storage.

@@ -22,6 +22,9 @@ Date: 2026-10-12
 - [x] Desktop feedback center with review-state filtering
 - [x] Desktop teacher settings with persisted local preferences
 - [x] Responsive desktop management layouts and browser acceptance
+- [x] Mobile assignment-feedback detail and revision flow
+- [x] Mobile statistics weekly/monthly interaction
+- [x] Mobile history calendar and daily record navigation
 - [x] No paid or third-party AI API in the import pipeline
 - [x] No force push or main-branch merge
 
