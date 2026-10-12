@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
-  ArrowUpRight, Bell, BookOpenCheck, CalendarDays, Check, ChevronDown, ChevronLeft, ChevronRight,
+  ArrowUpRight, Bell, BookOpenCheck, CalendarDays, Check, CheckCheck, ChevronLeft, ChevronRight,
   ClipboardCheck, Download, Inbox, LayoutDashboard, MessageSquareText, MoreHorizontal,
   PanelLeftClose, Search, Send, Settings, Sparkles, Upload, Users, X,
 } from 'lucide-react';
@@ -25,7 +25,7 @@ type StudentProject = (typeof students)[number] & { id: string; title: string; d
 const initialProjects: StudentProject[] = students.map((student, index) => ({ ...student, id: `project-${index + 1}`, title: `${student.name}的学习计划` }));
 
 type StudentFilter = 'all' | 'active' | 'attention';
-type SavedReview = { score: string; comment: string; status: string; needsRevision: boolean; feedbackFile: string; published: boolean };
+type SavedReview = { score: string; comment: string; annotation: string; status: string; needsRevision: boolean; feedbackFile: string; published: boolean };
 
 const PROJECTS_KEY = 'daystep.dashboard.projects.v1';
 const INVITES_KEY = 'daystep.dashboard.invites.v1';
@@ -122,6 +122,7 @@ function ReviewWorkspace({ close }: { close: () => void }) {
   const [selectedId, setSelectedId] = useState('a1');
   const [score, setScore] = useState('88');
   const [comment, setComment] = useState('思路完整，组合数计算正确。第 4 题请补充事件互斥的判断依据。');
+  const [annotation, setAnnotation] = useState('第 2 题：补充互斥事件可以直接相加的理由。');
   const [published, setPublished] = useState(false);
   const [tool, setTool] = useState<'批注' | '高亮' | '文字'>('批注');
   const [status, setStatus] = useState('graded');
@@ -132,17 +133,23 @@ function ReviewWorkspace({ close }: { close: () => void }) {
   useEffect(() => {
     const saved = readStored<Record<string, SavedReview>>(REVIEWS_KEY, {})[selectedId];
     setScore(saved?.score || '88'); setComment(saved?.comment || '思路完整，组合数计算正确。第 4 题请补充事件互斥的判断依据。');
-    setStatus(saved?.status || 'graded'); setNeedsRevision(saved?.needsRevision || false); setFeedbackFile(saved?.feedbackFile || ''); setPublished(saved?.published || false);
+    setAnnotation(saved?.annotation || '第 2 题：补充互斥事件可以直接相加的理由。'); setStatus(saved?.status || 'graded'); setNeedsRevision(saved?.needsRevision || false); setFeedbackFile(saved?.feedbackFile || ''); setPublished(saved?.published || false);
   }, [selectedId]);
   const publishReview = () => {
     const reviews = readStored<Record<string, SavedReview>>(REVIEWS_KEY, {});
-    reviews[selectedId] = { score, comment: comment.trim(), status, needsRevision, feedbackFile, published: true };
+    reviews[selectedId] = { score, comment: comment.trim(), annotation: annotation.trim(), status, needsRevision, feedbackFile, published: true };
     localStorage.setItem(REVIEWS_KEY, JSON.stringify(reviews)); setPublished(true);
   };
+  const publishBatch = () => {
+    const reviews = readStored<Record<string, SavedReview>>(REVIEWS_KEY, {});
+    assignments.forEach((item) => { reviews[item.id] ||= { score: '85', comment: '已完成批量检查，请按反馈继续完善。', annotation: '', status: 'graded', needsRevision: false, feedbackFile: '', published: true }; });
+    localStorage.setItem(REVIEWS_KEY, JSON.stringify(reviews));
+    const saved = reviews[selectedId]; setScore(saved.score); setComment(saved.comment); setAnnotation(saved.annotation); setStatus(saved.status); setNeedsRevision(saved.needsRevision); setFeedbackFile(saved.feedbackFile); setPublished(true);
+  };
   return <><Topbar title="作业批改" /><main className="review-layout">
-    <aside className="review-queue"><div className="queue-title"><div><span className="eyebrow">批改队列</span><h2>待处理 3</h2></div><button className="icon-button"><ChevronDown /></button></div>{assignments.map((item) => <button className={`queue-item ${selected.id === item.id ? 'selected' : ''}`} key={item.id} onClick={() => { setSelectedId(item.id); setPublished(false); }}><span className="avatar">{item.student.at(0)}</span><span><strong>{item.student}</strong><small>{item.title}</small><time>{item.submittedAt}</time></span></button>)}</aside>
+    <aside className="review-queue"><div className="queue-title"><div><span className="eyebrow">批改队列</span><h2>待处理 {assignments.filter((item) => !readStored<Record<string, SavedReview>>(REVIEWS_KEY, {})[item.id]?.published).length}</h2></div><button className="icon-button" aria-label="批量发布有效评分" title="批量发布有效评分" onClick={publishBatch}><CheckCheck /></button></div>{assignments.map((item) => <button className={`queue-item ${selected.id === item.id ? 'selected' : ''}`} key={item.id} onClick={() => { setSelectedId(item.id); setPublished(false); }}><span className="avatar">{item.student.at(0)}</span><span><strong>{item.student}</strong><small>{item.title}</small><time>{item.submittedAt}</time></span></button>)}</aside>
     <section className="document-viewer"><div className="document-toolbar"><div><button className="icon-button" aria-label="返回总览" onClick={close}><ChevronLeft /></button><strong>{selected.title}</strong></div><div>{(['批注','高亮','文字'] as const).map((name) => <button className={tool === name ? 'tool active' : 'tool'} key={name} onClick={() => setTool(name)}>{name}</button>)}<button className="icon-button" aria-label="下载原文件" disabled title="真实文件接入后开放"><Download /></button></div></div><div className="paper"><div className="paper-heading"><span>{selected.subject}</span><h2>{selected.title}</h2><p>姓名：{selected.student}　日期：2026-10-10</p></div><ol><li>袋中有 4 个红球、3 个白球，任取两个球，求颜色相同的概率。<div className="answer">C(4,2) + C(3,2) / C(7,2) = 9 / 21 = 3 / 7</div><span className="mark correct"><Check />正确</span></li><li>甲、乙两事件互斥，P(A)=0.3，P(B)=0.4，求 P(A∪B)。<div className="answer">P(A∪B) = 0.3 + 0.4 = 0.7</div><span className="annotation">请写出“互斥事件”条件为何允许直接相加。</span></li><li>完成树状图并列出所有可能结果。<div className="tree-placeholder">学生作答图像 · 第 2 页</div></li></ol></div><div className="page-counter">第 1 页 / 共 {selected.files.length} 页</div></section>
-    <aside className="feedback-panel"><div className="student-header"><span className="avatar">{selected.student.at(0)}</span><div><strong>{selected.student}</strong><small>{selected.subject}</small></div><button className="icon-button" aria-label="关闭批改" onClick={close}><X /></button></div><div className="meta"><span>提交时间</span><strong>{selected.submittedAt}</strong><span>附件</span><strong>{selected.files.length} 个文件</strong></div><label>得分<div className="score-input"><input className={scoreInvalid ? 'invalid' : ''} value={score} onChange={(event) => { setScore(event.target.value); setPublished(false); }} inputMode="numeric" /><span>/ 100</span></div>{scoreInvalid && <small className="field-error">请输入 0–100 的分数</small>}</label><label>批改状态<select value={status} onChange={(event) => { setStatus(event.target.value); setPublished(false); }}><option value="reviewing">批改中</option><option value="graded">已批改</option><option value="revision">需订正</option></select></label><label>教师评语<textarea value={comment} onChange={(event) => { setComment(event.target.value); setPublished(false); }} /></label><label className="check-row"><input type="checkbox" checked={needsRevision} onChange={(event) => { setNeedsRevision(event.target.checked); setStatus(event.target.checked ? 'revision' : 'graded'); setPublished(false); }} />需要学生订正后重交</label><button className={feedbackFile ? 'upload-feedback uploaded' : 'upload-feedback'} onClick={() => { setFeedbackFile('批改反馈.pdf'); setPublished(false); }}><Upload />{feedbackFile || '上传批改文件'}</button>{published ? <div className="published"><Check />反馈已发布给学生并保存</div> : <button className="publish" disabled={scoreInvalid || !comment.trim()} onClick={publishReview}><Send />发布评分与反馈</button>}</aside>
+    <aside className="feedback-panel"><div className="student-header"><span className="avatar">{selected.student.at(0)}</span><div><strong>{selected.student}</strong><small>{selected.subject}</small></div><button className="icon-button" aria-label="关闭批改" onClick={close}><X /></button></div><div className="meta"><span>提交时间</span><strong>{selected.submittedAt}</strong><span>附件</span><strong>{selected.files.length} 个文件</strong></div><label>得分<div className="score-input"><input className={scoreInvalid ? 'invalid' : ''} value={score} onChange={(event) => { setScore(event.target.value); setPublished(false); }} inputMode="numeric" /><span>/ 100</span></div>{scoreInvalid && <small className="field-error">请输入 0–100 的分数</small>}</label><label>批改状态<select value={status} onChange={(event) => { setStatus(event.target.value); setPublished(false); }}><option value="reviewing">批改中</option><option value="graded">已批改</option><option value="revision">需订正</option></select></label><label>页内批注<textarea className="annotation-input" value={annotation} onChange={(event) => { setAnnotation(event.target.value); setPublished(false); }} /></label><label>教师评语<textarea value={comment} onChange={(event) => { setComment(event.target.value); setPublished(false); }} /></label><label className="check-row"><input type="checkbox" checked={needsRevision} onChange={(event) => { setNeedsRevision(event.target.checked); setStatus(event.target.checked ? 'revision' : 'graded'); setPublished(false); }} />需要学生订正后重交</label><button className={feedbackFile ? 'upload-feedback uploaded' : 'upload-feedback'} onClick={() => { setFeedbackFile('批改反馈.pdf'); setPublished(false); }}><Upload />{feedbackFile || '上传批改文件'}</button>{published ? <div className="published"><Check />反馈已发布给学生并保存</div> : <button className="publish" disabled={scoreInvalid || !comment.trim()} onClick={publishReview}><Send />发布评分与反馈</button>}</aside>
   </main></>;
 }
 

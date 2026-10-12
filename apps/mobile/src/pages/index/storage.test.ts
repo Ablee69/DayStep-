@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { Task } from '@daystep/domain';
-import { calculateTaskInsights, restorePlanDraft, restoreTasks } from './storage';
+import { calculateTaskInsights, defaultProfile, restorePlanDraft, restoreProfile, restoreTasks } from './storage';
 
 const fallback: Task[] = [{
   id: 'fallback', title: 'Fallback', goal: 'Goal', project: 'Project', duration: 10,
@@ -39,5 +39,15 @@ describe('deterministic task insights', () => {
     expect(result.completedMinutes).toBe(20);
     expect(result.evidence).toHaveLength(3);
     expect(result.suggestion).toContain('1 个尚未开始');
+  });
+});
+
+describe('profile preference recovery', () => {
+  it('uses safe defaults and normalizes supported preferences', () => {
+    expect(restoreProfile(null)).toBe(defaultProfile);
+    expect(restoreProfile({ name: '  Lin  ', role: 'student', reminders: false, reminderTime: '20:15' })).toEqual({
+      name: 'Lin', role: 'student', reminders: false, reminderTime: '20:15', weeklyReport: true,
+    });
+    expect(restoreProfile({ name: '', role: 'admin', reminderTime: '8:30' })).toEqual(defaultProfile);
   });
 });

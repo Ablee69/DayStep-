@@ -39,9 +39,11 @@ Deterministic scoring, evidence display, reviews, reports, adjustment suggestion
 
 The mobile statistics page calculates a reproducible score from task completion, action frequency, and completed-step evidence. Weekly/monthly reports, rule-based suggestions, and explicit persisted approval are implemented without an AI API.
 
-## Phase F: Advanced review and release
+## Phase F: Advanced review and release — Local release candidate complete
 
 Image/PDF annotation, batch review, notifications, H5 deployment, WeChat optimization, release preparation, and real-device verification.
+
+The local release candidate includes persisted review annotations, batch review publishing, mobile profile/role preferences, reminder preferences, weekly-report preferences, and local JSON data export. Production notification delivery, public H5 hosting, WeChat submission, and physical-device verification require deployment accounts and are tracked in `docs/RELEASE_CHECKLIST.md`.
 
 Optional built-in AI planning may be evaluated only after deterministic import, canonical persistence, permissions, and import safety tests are complete. It must use the same versioned plan schema and confirmation flow.
 

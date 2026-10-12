@@ -59,10 +59,21 @@ Status: complete for the local application workflow.
 - Rule-based adjustment suggestions never modify tasks automatically.
 - Explicit approval is required and persists across reloads.
 
+## Phase F - Advanced review and release
+
+Status: local release candidate complete.
+
+- Mobile Profile is enabled with editable display name and role selection.
+- Reminder time, daily reminder, and weekly report preferences persist locally.
+- Users can export profile, plan draft, and task data as versioned JSON without a third-party API.
+- Desktop review annotations persist with the published review.
+- Teachers can batch publish valid default reviews for the current queue.
+- A release checklist separates completed engineering checks from account-dependent deployment steps.
+
 ## Verification
 
 - All workspace TypeScript checks pass.
-- 17 focused tests pass: domain 8, dashboard 5, mobile storage and scoring 4.
+- 18 focused tests pass: domain 8, dashboard 5, mobile storage, scoring, and profile 5.
 - Dashboard production build passes.
 - Taro H5 and WeChat mini-program production builds pass.
 - H5 reports one non-blocking 300 KiB entrypoint size warning.

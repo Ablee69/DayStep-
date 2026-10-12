@@ -12,6 +12,22 @@ export type PlanDraft = {
 export const TASKS_STORAGE_KEY = 'daystep.tasks.v1';
 export const DRAFT_STORAGE_KEY = 'daystep.plan-draft.v1';
 export const ADJUSTMENT_STORAGE_KEY = 'daystep.adjustment.v1';
+export const PROFILE_STORAGE_KEY = 'daystep.profile.v1';
+
+export type ProfilePreferences = { name: string; role: 'member' | 'student' | 'teacher'; reminders: boolean; reminderTime: string; weeklyReport: boolean };
+export const defaultProfile: ProfilePreferences = { name: 'Matthew', role: 'member', reminders: true, reminderTime: '08:30', weeklyReport: true };
+
+export function restoreProfile(value: unknown): ProfilePreferences {
+  if (!value || typeof value !== 'object') return defaultProfile;
+  const input = value as Partial<ProfilePreferences>;
+  return {
+    name: typeof input.name === 'string' && input.name.trim() ? input.name.trim().slice(0, 40) : defaultProfile.name,
+    role: input.role === 'student' || input.role === 'teacher' || input.role === 'member' ? input.role : defaultProfile.role,
+    reminders: input.reminders !== false,
+    reminderTime: typeof input.reminderTime === 'string' && /^\d{2}:\d{2}$/.test(input.reminderTime) ? input.reminderTime : defaultProfile.reminderTime,
+    weeklyReport: input.weeklyReport !== false,
+  };
+}
 
 export type TaskInsights = {
   score: number;
