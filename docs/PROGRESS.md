@@ -1,6 +1,6 @@
 # DayStep V6.0 Progress
 
-Last updated: 2026-10-11
+Last updated: 2026-10-12
 
 ## Completed
 
@@ -25,10 +25,16 @@ Last updated: 2026-10-11
 - All six Phase A pages now avoid inactive-looking controls: implemented actions respond, while later-phase actions are explicitly disabled.
 - Teacher Dashboard plan creation now appends a real in-memory project, updates filter counts, and displays confirmation feedback.
 - Weekly/monthly statistics selection now updates chart labeling, axis values, and the active trend series.
+- Mobile task progress, execution notes, mock result attachments, and generated plan drafts now persist in local Taro storage.
+- Saved plan drafts now appear on the Goal Map and reopen with the original form values for continued editing.
+- Mobile storage recovery is isolated behind typed parsing helpers with focused fallback tests.
+- Task Detail now provides a validated step composer with editable title and duration instead of inserting a generic step.
+- Result attachment behavior is explicitly labeled as a local Phase A demonstration rather than a real upload.
+- Phase A checkpoint `04b8e10` has been pushed to `origin/feature/daystep-ui-phase1`.
 
 ## In progress
 
-- Phase A final review and source-control checkpoint preparation.
+- Phase A is locally complete; the latest checkpoint is awaiting an explicit remote push.
 
 ## Not started
 
@@ -47,6 +53,11 @@ Last updated: 2026-10-11
 - Latest WeChat mini-program production build passes.
 - AI draft generation and desktop grading workflows were exercised end to end in the browser with no console errors.
 - Dashboard plan creation and statistics-period switching were exercised end to end in the browser with no console errors.
+- Mobile task progress, notes, and mock attachments were exercised across a full browser reload and restored successfully.
+- The save, Goal Map visibility, and continue-editing draft flow was exercised end to end in the H5 browser.
+- Custom task-step creation and persistence across reload were exercised end to end in the H5 browser.
+- Mobile storage recovery tests pass (3 tests).
+- Full workspace checks pass: 4 project typechecks and 9 focused tests.
 - Taro H5 and WeChat mini-program builds pass; H5 reports a non-blocking 299 KiB entrypoint size warning.
 - Six Phase A screens use typed local fixtures and do not claim cloud functionality.
-- No commit, push, merge, or deployment has been performed in this development step.
+- No merge or deployment has been performed.
