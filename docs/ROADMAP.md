@@ -1,8 +1,8 @@
-# DayStep V6.0 Roadmap
+# DayStep V6.2 Roadmap
 
-## Phase A: Architecture and core UI
+## Phase A: Architecture and core UI — Complete
 
-Current phase. Before feature implementation, confirm routing, domain boundaries, cross-platform strategy, database model, and design tokens.
+The six-screen UI foundation, cross-platform structure, typed fixtures, interactions, builds, and tests are complete on `feature/daystep-ui-phase1`.
 
 Deliver six interactive pages:
 
@@ -15,17 +15,23 @@ Deliver six interactive pages:
 
 Phase A acceptance requires responsive rendering, realistic typed fixtures, reusable components, working page interactions, loading/empty/error states, and tested H5 and desktop builds. Mock-backed behavior must be labeled as such.
 
-## Phase B: Real foundations
+## Phase B: Real foundations — Next
 
 Authentication, cloud accounts, workspaces, goal hierarchy, daily task instances, check-ins, history, synchronization, and baseline statistics.
 
-## Phase C: Intelligent planning
+This phase must define the canonical Goal, Milestone, Project, Task, Step, DailyTaskInstance, CheckIn, Workspace, Membership, Submission, Review, and PlanImport persistence models so imported and manually created plans share one execution system.
 
-Guided AI input, schema-validated planning, editable drafts, user confirmation, provider adapters, and plan version history.
+## Phase C: Deterministic plan import
+
+Deliver DayStep Markdown v1, `daystep.plan.v1` JSON Schema, Markdown and JSON parsers, validation, issue reporting, editable preview, deterministic scheduling suggestions, raw-source retention, duplicate detection, and atomic confirmation into the canonical Phase B models.
+
+The first release must not call a paid or third-party AI API. Pasted Markdown and uploaded `.md` / `.json` files are the primary inputs.
 
 ## Phase D: Teacher and student workflows
 
 Invitations, student management, task assignment, submissions, downloads, grading, feedback, corrected resubmissions, and permission isolation.
+
+Imported tasks must work in these workflows without a separate import-only database or reduced feature set.
 
 ## Phase E: Scoring and adaptation
 
@@ -34,5 +40,7 @@ Deterministic scoring, evidence display, reviews, reports, adjustment suggestion
 ## Phase F: Advanced review and release
 
 Image/PDF annotation, batch review, notifications, H5 deployment, WeChat optimization, release preparation, and real-device verification.
+
+Optional built-in AI planning may be evaluated only after deterministic import, canonical persistence, permissions, and import safety tests are complete. It must use the same versioned plan schema and confirmation flow.
 
 No later phase should be represented as complete before its required integrations and tests exist.
