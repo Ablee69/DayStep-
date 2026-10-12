@@ -12,6 +12,9 @@ Date: 2026-10-12
 - [x] Deterministic plan import browser acceptance
 - [x] Statistics and adjustment approval browser acceptance
 - [x] Profile settings and local JSON export
+- [x] Versioned export boundary test
+- [x] Graceful local-storage failure handling
+- [x] Accessible names for all mobile bottom-navigation actions
 - [x] Persisted review annotations and batch review action
 - [x] No paid or third-party AI API in the import pipeline
 - [x] No force push or main-branch merge
@@ -25,7 +28,9 @@ Date: 2026-10-12
 - [ ] Configure WeChat AppID, legal domains, privacy declarations, and submission metadata
 - [ ] Verify H5 on current iOS Safari and Android Chrome devices
 - [ ] Verify mini-program on at least one iOS and one Android WeChat device
-- [ ] Run accessibility, network interruption, and low-storage scenarios
+- [ ] Run full screen-reader and keyboard-only accessibility audit on physical devices
+- [ ] Run production API network interruption scenarios after the backend is selected
+- [x] Handle local-storage write failures without losing the current screen
 - [ ] Add privacy policy, terms, support contact, and account deletion endpoint
 - [ ] Complete security and backup/restore review before public launch
 

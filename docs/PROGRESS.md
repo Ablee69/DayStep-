@@ -73,12 +73,14 @@ Status: local release candidate complete.
 ## Verification
 
 - All workspace TypeScript checks pass.
-- 18 focused tests pass: domain 8, dashboard 5, mobile storage, scoring, and profile 5.
+- 19 focused tests pass: domain 8, dashboard 5, mobile storage, scoring, profile, and export 6.
 - Dashboard production build passes.
 - Taro H5 and WeChat mini-program production builds pass.
 - H5 reports one non-blocking 300 KiB entrypoint size warning.
 - Browser acceptance verified the Markdown paste, recognition, structured preview, confirmation, and generated task flow.
 - Browser acceptance verified Statistics navigation, weekly/monthly switching, evidence display, and persisted adjustment approval.
+- Local persistence failures now surface a clear message instead of crashing the active workflow.
+- Mobile bottom navigation exposes accessible names, and versioned data export has a focused boundary test.
 - No merge, force push, or production deployment has been performed.
 
 ## Next production work

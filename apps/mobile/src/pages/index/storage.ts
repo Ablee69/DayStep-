@@ -29,6 +29,10 @@ export function restoreProfile(value: unknown): ProfilePreferences {
   };
 }
 
+export function createDataExport(profile: ProfilePreferences, planDraft: PlanDraft | null, tasks: Task[], exportedAt: string) {
+  return JSON.stringify({ version: 'daystep.export.v1', exportedAt, profile, planDraft, tasks }, null, 2);
+}
+
 export type TaskInsights = {
   score: number;
   completionRate: number;

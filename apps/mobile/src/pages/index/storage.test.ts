@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { Task } from '@daystep/domain';
-import { calculateTaskInsights, defaultProfile, restorePlanDraft, restoreProfile, restoreTasks } from './storage';
+import { calculateTaskInsights, createDataExport, defaultProfile, restorePlanDraft, restoreProfile, restoreTasks } from './storage';
 
 const fallback: Task[] = [{
   id: 'fallback', title: 'Fallback', goal: 'Goal', project: 'Project', duration: 10,
@@ -49,5 +49,16 @@ describe('profile preference recovery', () => {
       name: 'Lin', role: 'student', reminders: false, reminderTime: '20:15', weeklyReport: true,
     });
     expect(restoreProfile({ name: '', role: 'admin', reminderTime: '8:30' })).toEqual(defaultProfile);
+  });
+});
+
+describe('versioned local export', () => {
+  it('exports only the selected profile, plan, and task data', () => {
+    const json = createDataExport(defaultProfile, null, fallback, '2026-10-12T00:00:00.000Z');
+    const value = JSON.parse(json);
+    expect(value.version).toBe('daystep.export.v1');
+    expect(value.exportedAt).toBe('2026-10-12T00:00:00.000Z');
+    expect(value.tasks[0].id).toBe('fallback');
+    expect(Object.keys(value)).toEqual(['version', 'exportedAt', 'profile', 'planDraft', 'tasks']);
   });
 });
