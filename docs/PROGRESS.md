@@ -91,6 +91,10 @@ Status: complete for the current local dashboard scope.
 - Plan management provides status filters, searchable plan rows, progress and deadline context, and a working entry into the existing create-plan flow.
 - Goal management presents the shared goal hierarchy as expandable long-term goals with stage milestones and progress.
 - Browser acceptance verified student switching, empty plan filtering, create-plan modal routing, and goal-tree expansion.
+- The feedback center consolidates published reviews, revision states, score evidence, annotations, and direct review-workspace access with search and status filters.
+- Teacher settings provide interactive profile, notification, and data-safety sections; preferences save locally and survive browser refreshes.
+- Responsive rules cover all six desktop management areas, including narrow sidebar, stacked detail views, compact tables, and touch-sized actions.
+- Browser acceptance verified feedback filtering, settings section switching, saved preference confirmation, and refresh persistence.
 
 ## Next production work
 

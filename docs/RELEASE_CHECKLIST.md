@@ -19,6 +19,9 @@ Date: 2026-10-12
 - [x] Desktop student management and student-detail interaction
 - [x] Desktop plan filtering and create-plan entry
 - [x] Desktop expandable goal and milestone view
+- [x] Desktop feedback center with review-state filtering
+- [x] Desktop teacher settings with persisted local preferences
+- [x] Responsive desktop management layouts and browser acceptance
 - [x] No paid or third-party AI API in the import pipeline
 - [x] No force push or main-branch merge
 

@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import type { Assignment } from '@daystep/domain';
 
-type View = 'dashboard' | 'students' | 'plans' | 'goals' | 'review';
+type View = 'dashboard' | 'students' | 'plans' | 'goals' | 'review' | 'feedback' | 'settings';
 type DashboardPanel = 'new-plan' | 'students' | 'insight' | 'student' | 'notifications' | null;
 
 const assignments: Assignment[] = [
@@ -30,6 +30,7 @@ type SavedReview = { score: string; comment: string; annotation: string; status:
 const PROJECTS_KEY = 'daystep.dashboard.projects.v1';
 const INVITES_KEY = 'daystep.dashboard.invites.v1';
 const REVIEWS_KEY = 'daystep.dashboard.reviews.v1';
+const SETTINGS_KEY = 'daystep.dashboard.settings.v1';
 
 function readStored<T>(key: string, fallback: T): T {
   try { const raw = localStorage.getItem(key); return raw ? JSON.parse(raw) as T : fallback; } catch { return fallback; }
@@ -57,9 +58,9 @@ function Sidebar({ view, setView }: { view: View; setView: (view: View) => void 
       <button className={view === 'dashboard' ? 'active' : ''} onClick={() => setView('dashboard')}><LayoutDashboard />总览</button>
       <button className={view === 'students' ? 'active' : ''} onClick={() => setView('students')}><Users />学生</button><button className={view === 'plans' ? 'active' : ''} onClick={() => setView('plans')}><CalendarDays />计划</button><button className={view === 'goals' ? 'active' : ''} onClick={() => setView('goals')}><BookOpenCheck />目标</button>
       <button className={view === 'review' ? 'active' : ''} onClick={() => setView('review')}><ClipboardCheck />作业批改<span className="nav-count">3</span></button>
-      <button disabled title="下一阶段开放"><MessageSquareText />反馈</button>
+      <button className={view === 'feedback' ? 'active' : ''} onClick={() => setView('feedback')}><MessageSquareText />反馈</button>
     </nav>
-    <div className="sidebar-bottom"><button disabled title="下一阶段开放"><Settings />设置</button><div className="teacher"><span>秦</span><div><strong>秦老师</strong><small>数学 · 英语</small></div><MoreHorizontal /></div></div>
+    <div className="sidebar-bottom"><button className={view === 'settings' ? 'active' : ''} onClick={() => setView('settings')}><Settings />设置</button><div className="teacher"><span>秦</span><div><strong>秦老师</strong><small>数学 · 英语</small></div><MoreHorizontal /></div></div>
   </aside>;
 }
 
@@ -179,6 +180,38 @@ function GoalsWorkspace() {
   return <><Topbar title="目标管理" /><main className="management-page"><header className="page-heading"><div><span className="eyebrow">目标地图</span><h1>从长期目标到每日行动</h1><p>计划、阶段和任务使用同一套目标层级。</p></div><div className="overall-progress"><strong>{overall}%</strong><span>整体完成率</span></div></header><section className="goal-overview"><div><strong>{projects.length}</strong><span>长期目标</span></div><div><strong>{projects.length * 3}</strong><span>阶段里程碑</span></div><div><strong>{projects.length * 8}</strong><span>执行任务</span></div><div><strong>{projects.filter((item) => item.attention).length}</strong><span>待关注目标</span></div></section><section className="desktop-goal-tree">{projects.map((goal, index) => <article key={goal.id}><button className="goal-root" onClick={() => setExpanded(expanded === goal.id ? '' : goal.id)}><span className="goal-index">{String(index + 1).padStart(2, '0')}</span><span><small>长期目标 · {goal.name}</small><strong>{goal.title}</strong></span><div className="table-progress"><span>{goal.progress}%</span><div className="bar"><i style={{ width: `${goal.progress}%` }} /></div></div><ChevronRight className={expanded === goal.id ? 'rotated' : ''} /></button>{expanded === goal.id && <div className="goal-branches"><div><span>阶段 1</span><strong>基础建立</strong><small>完成核心知识与执行习惯</small><b>{Math.min(100, goal.progress + 14)}%</b></div><div><span>阶段 2</span><strong>专项强化</strong><small>按弱项拆分训练任务</small><b>{goal.progress}%</b></div><div><span>阶段 3</span><strong>成果与复盘</strong><small>提交成果并调整下一周期</small><b>{Math.max(0, goal.progress - 28)}%</b></div></div>}</article>)}</section></main></>;
 }
 
+type FeedbackFilter = 'all' | 'published' | 'revision';
+
+function FeedbackWorkspace({ openReview }: { openReview: () => void }) {
+  const [query, setQuery] = useState('');
+  const [filter, setFilter] = useState<FeedbackFilter>('all');
+  const [selectedId, setSelectedId] = useState(assignments[0].id);
+  const reviews = readStored<Record<string, SavedReview>>(REVIEWS_KEY, {});
+  const visible = assignments.filter((item) => {
+    const review = reviews[item.id];
+    const matchesQuery = !query.trim() || `${item.student} ${item.title} ${item.subject}`.toLocaleLowerCase('zh-CN').includes(query.trim().toLocaleLowerCase('zh-CN'));
+    const matchesFilter = filter === 'all' || (filter === 'published' ? review?.published : review?.needsRevision || review?.status === 'revision');
+    return matchesQuery && matchesFilter;
+  });
+  const selected = assignments.find((item) => item.id === selectedId) || visible[0] || assignments[0];
+  const review = reviews[selected.id];
+  const publishedCount = assignments.filter((item) => reviews[item.id]?.published).length;
+  const revisionCount = assignments.filter((item) => reviews[item.id]?.needsRevision || reviews[item.id]?.status === 'revision').length;
+  return <><Topbar title="反馈中心" query={query} onQueryChange={setQuery} /><main className="management-page"><header className="page-heading"><div><span className="eyebrow">学习反馈</span><h1>反馈中心</h1><p>集中查看已发布评语、订正要求与学生成果。</p></div><button className="page-primary" onClick={openReview}>进入作业批改</button></header><section className="feedback-summary"><div><strong>{publishedCount}</strong><span>已发布反馈</span></div><div><strong>{revisionCount}</strong><span>待订正</span></div><div><strong>{assignments.length - publishedCount}</strong><span>待处理</span></div></section><nav className="management-tabs"><button className={filter === 'all' ? 'active' : ''} onClick={() => setFilter('all')}>全部 {assignments.length}</button><button className={filter === 'published' ? 'active' : ''} onClick={() => setFilter('published')}>已发布 {publishedCount}</button><button className={filter === 'revision' ? 'active' : ''} onClick={() => setFilter('revision')}>需订正 {revisionCount}</button></nav><section className="feedback-workspace"><div className="feedback-list">{visible.map((item) => { const saved = reviews[item.id]; return <button className={selected.id === item.id ? 'selected' : ''} key={item.id} onClick={() => setSelectedId(item.id)}><span className="project-avatar">{item.student.at(0)}</span><span><strong>{item.student}</strong><small>{item.title}</small></span><b className={saved?.needsRevision ? 'revision' : ''}>{saved?.published ? (saved.needsRevision ? '需订正' : '已发布') : '待处理'}</b></button>; })}{visible.length === 0 && <div className="management-empty"><Inbox /><strong>没有匹配的反馈</strong><span>更换搜索词或状态筛选</span></div>}</div><article className="feedback-detail"><header><div><span className="eyebrow">{selected.subject}</span><h2>{selected.student}</h2><p>{selected.title}</p></div><span className={review?.needsRevision ? 'status-chip attention' : 'status-chip'}>{review?.published ? (review.needsRevision ? '需要订正' : '反馈已发布') : '等待批改'}</span></header><div className="feedback-score"><strong>{review?.score || '--'}</strong><span>本次得分 / 100</span></div><section><span className="eyebrow">教师评语</span><p>{review?.comment || '完成批改并发布后，教师评语会显示在这里。'}</p></section><section><span className="eyebrow">页内批注</span><p>{review?.annotation || '暂无页内批注。'}</p></section><footer><span>{selected.submittedAt} · {selected.files.length} 个附件</span><button onClick={openReview}>打开批改工作区</button></footer></article></section></main></>;
+}
+
+type TeacherSettings = { displayName: string; subjects: string; reminder: boolean; weeklyReport: boolean; reviewDigest: boolean };
+const defaultTeacherSettings: TeacherSettings = { displayName: '秦老师', subjects: '数学 · 英语', reminder: true, weeklyReport: true, reviewDigest: false };
+
+function SettingsWorkspace() {
+  const [settings, setSettings] = useState(() => readStored<TeacherSettings>(SETTINGS_KEY, defaultTeacherSettings));
+  const [saved, setSaved] = useState(false);
+  const [section, setSection] = useState<'profile' | 'notifications' | 'security'>('profile');
+  const update = <K extends keyof TeacherSettings>(key: K, value: TeacherSettings[K]) => { setSettings((current) => ({ ...current, [key]: value })); setSaved(false); };
+  const save = () => { localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); setSaved(true); };
+  return <><Topbar title="设置" /><main className="management-page settings-page"><header className="page-heading"><div><span className="eyebrow">工作空间设置</span><h1>教师偏好</h1><p>管理本地原型中的教师资料、提醒和报告偏好。</p></div><button className="page-primary" onClick={save}>保存设置</button></header><section className="settings-layout"><div className="settings-nav" aria-label="设置分类"><button className={section === 'profile' ? 'active' : ''} onClick={() => setSection('profile')}>个人资料</button><button className={section === 'notifications' ? 'active' : ''} onClick={() => setSection('notifications')}>通知偏好</button><button className={section === 'security' ? 'active' : ''} onClick={() => setSection('security')}>数据与安全</button></div><div className="settings-content">{section === 'profile' && <section><header><h2>个人资料</h2><p>用于教师工作台和学生端反馈署名。</p></header><label>显示名称<input value={settings.displayName} onChange={(event) => update('displayName', event.target.value)} /></label><label>授课方向<input value={settings.subjects} onChange={(event) => update('subjects', event.target.value)} /></label></section>}{section === 'notifications' && <section><header><h2>通知偏好</h2><p>生产通知服务接入前，这些选项仅保存在当前浏览器。</p></header><label className="setting-toggle"><span><strong>每日任务提醒</strong><small>提醒当天仍未处理的任务</small></span><input type="checkbox" checked={settings.reminder} onChange={(event) => update('reminder', event.target.checked)} /></label><label className="setting-toggle"><span><strong>每周学习报告</strong><small>汇总完成率、评分和调整建议</small></span><input type="checkbox" checked={settings.weeklyReport} onChange={(event) => update('weeklyReport', event.target.checked)} /></label><label className="setting-toggle"><span><strong>批改摘要</strong><small>集中提醒新增提交与订正作业</small></span><input type="checkbox" checked={settings.reviewDigest} onChange={(event) => update('reviewDigest', event.target.checked)} /></label></section>}{section === 'security' && <section><header><h2>数据与安全</h2><p>账户、权限和云端同步将在生产后端接入后统一管理。</p></header><div className="settings-note"><Check />当前没有向第三方 AI 服务发送计划或学生数据。</div></section>}</div></section></main>{saved && <div className="action-toast" role="status"><Check />设置已保存在本地</div>}</>;
+}
+
 export function App() {
   const [view, setView] = useState<View>('dashboard');
   const [dashboardCreate, setDashboardCreate] = useState(false);
@@ -188,6 +221,8 @@ export function App() {
     if (view === 'students') return <StudentsWorkspace openReview={() => setView('review')} />;
     if (view === 'plans') return <PlansWorkspace createPlan={() => { setDashboardCreate(true); setView('dashboard'); }} />;
     if (view === 'goals') return <GoalsWorkspace />;
+    if (view === 'feedback') return <FeedbackWorkspace openReview={() => setView('review')} />;
+    if (view === 'settings') return <SettingsWorkspace />;
     return <ReviewWorkspace close={() => setView('dashboard')} />;
   };
   return <div className="app-shell"><Sidebar view={view} setView={navigate} /><div className="workspace">{renderView()}</div></div>;
