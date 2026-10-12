@@ -48,14 +48,26 @@ Status: application workflow foundation complete.
 - Domain tests cover invitation acceptance, authorization, submission, review, and revision status.
 - Desktop demo plan, invitation, and review state persists locally for acceptance testing.
 
+## Phase E - Scoring and adaptation
+
+Status: complete for the local application workflow.
+
+- Mobile Statistics is enabled in bottom navigation.
+- Weekly and monthly trend views read the current canonical task collection.
+- The execution score is deterministic and combines completion rate, active-day consistency, and completed-step evidence.
+- The score displays its source evidence and completed minutes.
+- Rule-based adjustment suggestions never modify tasks automatically.
+- Explicit approval is required and persists across reloads.
+
 ## Verification
 
 - All workspace TypeScript checks pass.
-- 16 focused tests pass: domain 8, dashboard 5, mobile storage 3.
+- 17 focused tests pass: domain 8, dashboard 5, mobile storage and scoring 4.
 - Dashboard production build passes.
 - Taro H5 and WeChat mini-program production builds pass.
 - H5 reports one non-blocking 300 KiB entrypoint size warning.
 - Browser acceptance verified the Markdown paste, recognition, structured preview, confirmation, and generated task flow.
+- Browser acceptance verified Statistics navigation, weekly/monthly switching, evidence display, and persisted adjustment approval.
 - No merge, force push, or production deployment has been performed.
 
 ## Next production work

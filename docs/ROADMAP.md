@@ -15,27 +15,29 @@ Deliver six interactive pages:
 
 Phase A acceptance requires responsive rendering, realistic typed fixtures, reusable components, working page interactions, loading/empty/error states, and tested H5 and desktop builds. Mock-backed behavior must be labeled as such.
 
-## Phase B: Real foundations — Next
+## Phase B: Real foundations — Local foundation complete
 
 Authentication, cloud accounts, workspaces, goal hierarchy, daily task instances, check-ins, history, synchronization, and baseline statistics.
 
 This phase must define the canonical Goal, Milestone, Project, Task, Step, DailyTaskInstance, CheckIn, Workspace, Membership, Submission, Review, and PlanImport persistence models so imported and manually created plans share one execution system.
 
-## Phase C: Deterministic plan import
+## Phase C: Deterministic plan import — Complete
 
 Deliver DayStep Markdown v1, `daystep.plan.v1` JSON Schema, Markdown and JSON parsers, validation, issue reporting, editable preview, deterministic scheduling suggestions, raw-source retention, duplicate detection, and atomic confirmation into the canonical Phase B models.
 
 The first release must not call a paid or third-party AI API. Pasted Markdown and uploaded `.md` / `.json` files are the primary inputs.
 
-## Phase D: Teacher and student workflows
+## Phase D: Teacher and student workflows — Application foundation complete
 
 Invitations, student management, task assignment, submissions, downloads, grading, feedback, corrected resubmissions, and permission isolation.
 
 Imported tasks must work in these workflows without a separate import-only database or reduced feature set.
 
-## Phase E: Scoring and adaptation
+## Phase E: Scoring and adaptation — Complete
 
 Deterministic scoring, evidence display, reviews, reports, adjustment suggestions, and approval workflows.
+
+The mobile statistics page calculates a reproducible score from task completion, action frequency, and completed-step evidence. Weekly/monthly reports, rule-based suggestions, and explicit persisted approval are implemented without an AI API.
 
 ## Phase F: Advanced review and release
 
