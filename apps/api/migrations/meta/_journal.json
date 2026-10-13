@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "mysql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1791891672360,
+      "tag": "0000_gorgeous_the_santerians",
+      "breakpoints": true
+    }
+  ]
+}

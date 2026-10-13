@@ -30,9 +30,16 @@ Date: 2026-10-12
 - [x] No paid or third-party AI API in the import pipeline
 - [x] No force push or main-branch merge
 
+## Production foundation
+
+- [x] Select production backend direction: CloudBase hosting + MySQL + private object storage
+- [x] Define unified WeChat/Web identity mapping
+- [x] Add API workspace, environment contract, health and readiness endpoints
+- [x] Add relational schema and migration workflow
+
 ## Account-dependent release work
 
-- [ ] Select production authentication and database providers
+- [ ] Provision CloudBase, MySQL, storage, staging domain, and identity settings
 - [ ] Configure object storage and upload validation
 - [ ] Configure notification provider and request user permission at runtime
 - [ ] Configure public H5 domain, TLS, environment variables, and deployment pipeline

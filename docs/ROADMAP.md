@@ -48,3 +48,9 @@ The local release candidate includes persisted review annotations, batch review 
 Optional built-in AI planning may be evaluated only after deterministic import, canonical persistence, permissions, and import safety tests are complete. It must use the same versioned plan schema and confirmation flow.
 
 No later phase should be represented as complete before its required integrations and tests exist.
+
+## Phase G: Production cloud foundation — In progress
+
+The selected production direction is a unified Node.js API on Tencent CloudBase cloud hosting, backed by MySQL and private COS/CloudBase object storage. WeChat and Web identities map to one DayStep user through provider-neutral identity records.
+
+The local foundation includes the API workspace, environment contract, health/readiness checks, Drizzle relational schema, migration workflow, idempotency constraints, versioned submissions, private attachment metadata, notifications, and audit logs. Cloud resources, real identity verification, database migration execution, and storage signing remain account-dependent.

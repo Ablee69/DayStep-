@@ -1,6 +1,6 @@
 # DayStep V6.2 Progress
 
-Last updated: 2026-10-12
+Last updated: 2026-10-13
 
 ## Phase A - Six core UI screens
 
@@ -117,7 +117,17 @@ Status: complete for the local application workflow.
 
 ## Next production work
 
-- Select and configure the cloud backend, authentication provider, database, and file storage.
-- Add server-side persistence adapters and migrations for the existing canonical domain model.
+- Provision the selected CloudBase environment, MySQL database, private object storage, and staging domain.
+- Connect the API schema to the provisioned database and run the reviewed migration in staging.
 - Replace local attachment demonstrations with signed uploads and malware/type validation.
 - Add API-level concurrency, idempotency, audit logs, and end-to-end tests against the selected backend.
+
+## Phase G - Production cloud foundation
+
+Status: local foundation in progress; no cloud account has been connected.
+
+- Selected a unified Node.js API on Tencent CloudBase cloud hosting with MySQL and private COS/CloudBase storage.
+- Added a provider-neutral identity model so WeChat and Web logins can resolve to the same DayStep user.
+- Added an API workspace with liveness and dependency-readiness endpoints.
+- Added the relational schema and migration workflow for workspaces, goal hierarchy, daily execution, imports, versioned submissions, attachments, grading, annotations, invitations, notifications, and audit logs.
+- Added database uniqueness boundaries for import hashes, idempotency keys, generated daily tasks, submission versions, attachment object keys, and notification deduplication.

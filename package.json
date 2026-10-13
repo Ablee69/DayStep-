@@ -8,6 +8,7 @@
     "dev": "pnpm build:shared && pnpm --parallel --filter @daystep/mobile --filter @daystep/dashboard dev",
     "dev:mobile": "pnpm build:shared && pnpm --filter @daystep/mobile dev",
     "dev:dashboard": "pnpm build:shared && pnpm --filter @daystep/dashboard dev",
+    "dev:api": "pnpm build:shared && pnpm --filter @daystep/api dev",
     "build": "pnpm -r build",
     "test": "pnpm -r test",
     "typecheck": "pnpm -r typecheck"
