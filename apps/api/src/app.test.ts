@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import { buildApp } from './app.js';
 import { loadConfig } from './config.js';
+import type { DatabaseProbe } from './db/probe.js';
 
 const apps: ReturnType<typeof buildApp>[] = [];
 afterEach(async () => Promise.all(apps.splice(0).map((app) => app.close())));
@@ -26,5 +27,25 @@ describe('DayStep API foundation', () => {
     const readiness = await app.inject({ method: 'GET', url: '/ready' });
     expect(health.statusCode).toBe(200);
     expect(readiness.statusCode).toBe(503);
+  });
+
+  it('reports ready only after a real database probe succeeds', async () => {
+    const databaseProbe: DatabaseProbe = { check: async () => undefined, close: async () => undefined };
+    const app = buildApp(loadConfig({ NODE_ENV: 'test' }), databaseProbe); apps.push(app);
+    const response = await app.inject({ method: 'GET', url: '/ready' });
+    expect(response.statusCode).toBe(200);
+    expect(response.json()).toEqual({ status: 'ready', checks: { database: 'ok' } });
+  });
+
+  it('does not expose database errors from a failed probe', async () => {
+    const databaseProbe: DatabaseProbe = {
+      check: async () => { throw new Error('secret connection detail'); },
+      close: async () => undefined,
+    };
+    const app = buildApp(loadConfig({ NODE_ENV: 'test' }), databaseProbe); apps.push(app);
+    const response = await app.inject({ method: 'GET', url: '/ready' });
+    expect(response.statusCode).toBe(503);
+    expect(response.json()).toEqual({ status: 'not_ready', checks: { database: 'unavailable' } });
+    expect(response.body).not.toContain('secret connection detail');
   });
 });
