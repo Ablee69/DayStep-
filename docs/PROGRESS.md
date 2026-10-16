@@ -1,6 +1,6 @@
 # DayStep V6.2 Progress
 
-Last updated: 2026-10-13
+Last updated: 2026-10-16
 
 ## Phase A - Six core UI screens
 
@@ -124,7 +124,7 @@ Status: complete for the local application workflow.
 
 ## Phase G - Production cloud foundation
 
-Status: staging cloud resources provisioned; API deployment integration in progress.
+Status: staging database foundation and API readiness integration complete.
 
 - Selected a unified Node.js API on Tencent CloudBase cloud hosting with PostgreSQL and private COS/CloudBase storage.
 - Added a provider-neutral identity model so WeChat and Web logins can resolve to the same DayStep user.
@@ -132,4 +132,8 @@ Status: staging cloud resources provisioned; API deployment integration in progr
 - Added the relational schema and migration workflow for workspaces, goal hierarchy, daily execution, imports, versioned submissions, attachments, grading, annotations, invitations, notifications, and audit logs.
 - Added database uniqueness boundaries for import hashes, idempotency keys, generated daily tasks, submission versions, attachment object keys, and notification deduplication.
 - Provisioned the `daystep-staging` CloudBase environment in Shanghai with PostgreSQL 17.11 and a private `daystep-private` application bucket.
-- Added a root Docker build for `daystep-api-staging`; the first cloud build correctly failed before this file existed and is ready for a clean retry after push.
+- Applied migration `20261016000100_complete_foundation` to staging: 21 tables, 47 foreign keys, and 29 business indexes are present.
+- Added a root Docker build and deployed `daystep-api-staging-006` with 100% traffic.
+- CloudBase PostgreSQL Data API is used by the service readiness probe; both `/health` and `/ready` return HTTP 200 through the direct and environment gateway domains.
+- Verified staging database write, focused read, and cleanup with a temporary audit record; no probe data remains.
+- The server API key is stored only in CloudBase service environment variables and expires on 2026-10-23 19:17 Asia/Shanghai.

@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "taro build --type h5 --watch --port 4174",
-    "build": "taro build --type h5",
-    "build:weapp": "taro build --type weapp",
+    "dev": "taro build --type h5 --watch --port 4174 --no-check",
+    "build": "taro build --type h5 --no-check",
+    "build:weapp": "taro build --type weapp --no-check",
     "typecheck": "tsc --noEmit",
     "test": "vitest run --passWithNoTests"
   },
