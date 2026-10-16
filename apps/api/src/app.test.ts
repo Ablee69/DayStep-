@@ -19,4 +19,12 @@ describe('DayStep API foundation', () => {
     expect(response.statusCode).toBe(503);
     expect(response.json()).toMatchObject({ status: 'not_ready' });
   });
+
+  it('can boot a production container before secrets are injected', async () => {
+    const app = buildApp(loadConfig({ NODE_ENV: 'production' })); apps.push(app);
+    const health = await app.inject({ method: 'GET', url: '/health' });
+    const readiness = await app.inject({ method: 'GET', url: '/ready' });
+    expect(health.statusCode).toBe(200);
+    expect(readiness.statusCode).toBe(503);
+  });
 });
