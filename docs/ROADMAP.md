@@ -51,6 +51,6 @@ No later phase should be represented as complete before its required integration
 
 ## Phase G: Production cloud foundation — In progress
 
-The selected production direction is a unified Node.js API on Tencent CloudBase cloud hosting, backed by MySQL and private COS/CloudBase object storage. WeChat and Web identities map to one DayStep user through provider-neutral identity records.
+The selected production direction is a unified Node.js API on Tencent CloudBase cloud hosting, backed by PostgreSQL and private COS/CloudBase object storage. WeChat and Web identities map to one DayStep user through provider-neutral identity records.
 
 The local foundation includes the API workspace, environment contract, health/readiness checks, Drizzle relational schema, migration workflow, idempotency constraints, versioned submissions, private attachment metadata, notifications, and audit logs. Cloud resources, real identity verification, database migration execution, and storage signing remain account-dependent.

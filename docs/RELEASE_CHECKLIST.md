@@ -32,14 +32,15 @@ Date: 2026-10-12
 
 ## Production foundation
 
-- [x] Select production backend direction: CloudBase hosting + MySQL + private object storage
+- [x] Select production backend direction: CloudBase hosting + PostgreSQL + private object storage
 - [x] Define unified WeChat/Web identity mapping
 - [x] Add API workspace, environment contract, health and readiness endpoints
 - [x] Add relational schema and migration workflow
 
 ## Account-dependent release work
 
-- [ ] Provision CloudBase, MySQL, storage, staging domain, and identity settings
+- [x] Provision the staging CloudBase environment, PostgreSQL instance, and private storage bucket
+- [ ] Configure the staging API domain and identity settings
 - [ ] Configure object storage and upload validation
 - [ ] Configure notification provider and request user permission at runtime
 - [ ] Configure public H5 domain, TLS, environment variables, and deployment pipeline

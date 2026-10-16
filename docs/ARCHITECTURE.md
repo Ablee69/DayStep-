@@ -5,16 +5,16 @@
 DayStep will use a provider-contained API architecture:
 
 - Node.js API service deployed to Tencent CloudBase cloud hosting.
-- MySQL as the canonical relational database.
+- CloudBase PostgreSQL as the canonical relational database.
 - Private Tencent COS or CloudBase storage for user attachments.
 - CloudBase/WeChat identity for mini-program users and a Web identity adapter for H5 and desktop users.
 - A DayStep user record links all external identities so one person does not receive separate data silos.
 
-Clients never connect directly to MySQL and never receive permanent storage credentials. The API owns authorization, transactions, idempotency, audit logging, signed upload creation, and schema validation.
+Clients never connect directly to PostgreSQL and never receive permanent storage credentials. The API owns authorization, transactions, idempotency, audit logging, signed upload creation, and schema validation.
 
 ## Why this stack
 
-The product must serve WeChat mini-program, mobile H5, and desktop Web users in mainland China and Taiwan. CloudBase provides native WeChat integration and Web/backend hosting, while MySQL preserves the canonical relational hierarchy and permission boundaries already defined by the domain package. Provider details stay behind adapters so deployment can move without rewriting product logic.
+The product must serve WeChat mini-program, mobile H5, and desktop Web users in mainland China and Taiwan. CloudBase provides native WeChat integration and Web/backend hosting, while PostgreSQL preserves the canonical relational hierarchy and permission boundaries already defined by the domain package. Provider details stay behind adapters so deployment can move without rewriting product logic.
 
 ## Trust boundaries
 
@@ -27,7 +27,7 @@ The product must serve WeChat mini-program, mobile H5, and desktop Web users in 
 
 ## Environments
 
-- Local: API health checks run without cloud credentials; MySQL can be supplied through `DATABASE_URL`.
+- Local: API health checks run without cloud credentials; PostgreSQL can be supplied through `DATABASE_URL`.
 - Staging: separate CloudBase environment, database, bucket, domain, and WeChat test configuration.
 - Production: isolated resources, managed secrets, backups, monitoring, and least-privilege service accounts.
 

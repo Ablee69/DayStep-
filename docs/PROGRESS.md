@@ -117,17 +117,19 @@ Status: complete for the local application workflow.
 
 ## Next production work
 
-- Provision the selected CloudBase environment, MySQL database, private object storage, and staging domain.
+- Finish the CloudBase staging API deployment against the provisioned PostgreSQL database and private object storage.
 - Connect the API schema to the provisioned database and run the reviewed migration in staging.
 - Replace local attachment demonstrations with signed uploads and malware/type validation.
 - Add API-level concurrency, idempotency, audit logs, and end-to-end tests against the selected backend.
 
 ## Phase G - Production cloud foundation
 
-Status: local foundation in progress; no cloud account has been connected.
+Status: staging cloud resources provisioned; API deployment integration in progress.
 
-- Selected a unified Node.js API on Tencent CloudBase cloud hosting with MySQL and private COS/CloudBase storage.
+- Selected a unified Node.js API on Tencent CloudBase cloud hosting with PostgreSQL and private COS/CloudBase storage.
 - Added a provider-neutral identity model so WeChat and Web logins can resolve to the same DayStep user.
 - Added an API workspace with liveness and dependency-readiness endpoints.
 - Added the relational schema and migration workflow for workspaces, goal hierarchy, daily execution, imports, versioned submissions, attachments, grading, annotations, invitations, notifications, and audit logs.
 - Added database uniqueness boundaries for import hashes, idempotency keys, generated daily tasks, submission versions, attachment object keys, and notification deduplication.
+- Provisioned the `daystep-staging` CloudBase environment in Shanghai with PostgreSQL 17.11 and a private `daystep-private` application bucket.
+- Added a root Docker build for `daystep-api-staging`; the first cloud build correctly failed before this file existed and is ready for a clean retry after push.
