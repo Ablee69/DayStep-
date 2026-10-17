@@ -137,3 +137,5 @@ Status: staging database foundation and API readiness integration complete.
 - CloudBase PostgreSQL Data API is used by the service readiness probe; both `/health` and `/ready` return HTTP 200 through the direct and environment gateway domains.
 - Verified staging database write, focused read, and cleanup with a temporary audit record; no probe data remains.
 - The server API key is stored only in CloudBase service environment variables and expires on 2026-10-23 19:17 Asia/Shanghai.
+- Enabled username/password authentication, provisioned the CloudBase publishable key, and added a real session gate plus sign-out flow to the desktop Web app.
+- Frontend CloudBase values are loaded from ignored local environment files; only a blank `.env.example` contract is committed.

@@ -10,6 +10,7 @@
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
+    "@cloudbase/js-sdk": "^3.10.2",
     "@daystep/design-tokens": "workspace:*",
     "@daystep/domain": "workspace:*",
     "lucide-react": "^0.468.0",
