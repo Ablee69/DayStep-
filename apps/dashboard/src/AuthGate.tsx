@@ -58,8 +58,11 @@ export function AuthGate({ children }: AuthGateProps) {
 
   const signOut = async () => {
     if (!cloudbaseAuth) return;
-    await cloudbaseAuth.signOut();
-    setStatus('signed-out');
+    try {
+      await cloudbaseAuth.signOut();
+    } finally {
+      setStatus('signed-out');
+    }
   };
 
   if (status === 'checking') {

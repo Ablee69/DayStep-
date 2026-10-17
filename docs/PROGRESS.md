@@ -139,3 +139,4 @@ Status: staging database foundation and API readiness integration complete.
 - The server API key is stored only in CloudBase service environment variables and expires on 2026-10-23 19:17 Asia/Shanghai.
 - Enabled username/password authentication, provisioned the CloudBase publishable key, and added a real session gate plus sign-out flow to the desktop Web app.
 - Frontend CloudBase values are loaded from ignored local environment files; only a blank `.env.example` contract is committed.
+- Created the staging administrator identity and mapped its CloudBase UID to one active DayStep user, custom auth identity, and profile using an idempotent transaction; a focused read verified the mapping.
