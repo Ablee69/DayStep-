@@ -5,6 +5,7 @@ import {
   LogOut, PanelLeftClose, Search, Send, Settings, Sparkles, Upload, Users, X,
 } from 'lucide-react';
 import type { Assignment } from '@daystep/domain';
+import type { SignedInIdentity } from './AuthGate';
 
 type View = 'dashboard' | 'students' | 'plans' | 'goals' | 'review' | 'feedback' | 'settings';
 type DashboardPanel = 'new-plan' | 'students' | 'insight' | 'student' | 'notifications' | null;
@@ -51,7 +52,9 @@ export function isValidScore(value: string) {
   return Number.isFinite(score) && score >= 0 && score <= 100;
 }
 
-function Sidebar({ view, setView, onSignOut }: { view: View; setView: (view: View) => void; onSignOut?: () => void }) {
+function Sidebar({ view, setView, identity, onSignOut }: { view: View; setView: (view: View) => void; identity?: SignedInIdentity; onSignOut?: () => Promise<void> }) {
+  const displayName = identity?.displayName || '秦老师';
+  const workspaceName = identity?.workspaceName || '数学 · 英语';
   return <aside className="sidebar">
     <div className="brand"><span className="brand-mark">D</span><span>DayStep</span></div>
     <nav aria-label="主要导航">
@@ -60,7 +63,7 @@ function Sidebar({ view, setView, onSignOut }: { view: View; setView: (view: Vie
       <button className={view === 'review' ? 'active' : ''} onClick={() => setView('review')}><ClipboardCheck />作业批改<span className="nav-count">3</span></button>
       <button className={view === 'feedback' ? 'active' : ''} onClick={() => setView('feedback')}><MessageSquareText />反馈</button>
     </nav>
-    <div className="sidebar-bottom"><button className={view === 'settings' ? 'active' : ''} onClick={() => setView('settings')}><Settings />设置</button><div className="teacher"><span>秦</span><div><strong>秦老师</strong><small>数学 · 英语</small></div>{onSignOut ? <button className="teacher-signout" aria-label="退出登录" title="退出登录" onClick={onSignOut}><LogOut /></button> : <MoreHorizontal />}</div></div>
+    <div className="sidebar-bottom"><button className={view === 'settings' ? 'active' : ''} onClick={() => setView('settings')}><Settings />设置</button><div className="teacher"><span>{displayName.at(0)}</span><div><strong>{displayName}</strong><small>{workspaceName}</small></div>{onSignOut ? <button type="button" className="teacher-signout" aria-label="退出登录" title="退出登录" onClick={() => { void onSignOut(); }}><LogOut /></button> : <MoreHorizontal />}</div></div>
   </aside>;
 }
 
@@ -212,7 +215,7 @@ function SettingsWorkspace() {
   return <><Topbar title="设置" /><main className="management-page settings-page"><header className="page-heading"><div><span className="eyebrow">工作空间设置</span><h1>教师偏好</h1><p>管理本地原型中的教师资料、提醒和报告偏好。</p></div><button className="page-primary" onClick={save}>保存设置</button></header><section className="settings-layout"><div className="settings-nav" aria-label="设置分类"><button className={section === 'profile' ? 'active' : ''} onClick={() => setSection('profile')}>个人资料</button><button className={section === 'notifications' ? 'active' : ''} onClick={() => setSection('notifications')}>通知偏好</button><button className={section === 'security' ? 'active' : ''} onClick={() => setSection('security')}>数据与安全</button></div><div className="settings-content">{section === 'profile' && <section><header><h2>个人资料</h2><p>用于教师工作台和学生端反馈署名。</p></header><label>显示名称<input value={settings.displayName} onChange={(event) => update('displayName', event.target.value)} /></label><label>授课方向<input value={settings.subjects} onChange={(event) => update('subjects', event.target.value)} /></label></section>}{section === 'notifications' && <section><header><h2>通知偏好</h2><p>生产通知服务接入前，这些选项仅保存在当前浏览器。</p></header><label className="setting-toggle"><span><strong>每日任务提醒</strong><small>提醒当天仍未处理的任务</small></span><input type="checkbox" checked={settings.reminder} onChange={(event) => update('reminder', event.target.checked)} /></label><label className="setting-toggle"><span><strong>每周学习报告</strong><small>汇总完成率、评分和调整建议</small></span><input type="checkbox" checked={settings.weeklyReport} onChange={(event) => update('weeklyReport', event.target.checked)} /></label><label className="setting-toggle"><span><strong>批改摘要</strong><small>集中提醒新增提交与订正作业</small></span><input type="checkbox" checked={settings.reviewDigest} onChange={(event) => update('reviewDigest', event.target.checked)} /></label></section>}{section === 'security' && <section><header><h2>数据与安全</h2><p>账户、权限和云端同步将在生产后端接入后统一管理。</p></header><div className="settings-note"><Check />当前没有向第三方 AI 服务发送计划或学生数据。</div></section>}</div></section></main>{saved && <div className="action-toast" role="status"><Check />设置已保存在本地</div>}</>;
 }
 
-export function App({ onSignOut }: { onSignOut?: () => Promise<void> } = {}) {
+export function App({ identity, onSignOut }: { identity?: SignedInIdentity; onSignOut?: () => Promise<void> } = {}) {
   const [view, setView] = useState<View>('dashboard');
   const [dashboardCreate, setDashboardCreate] = useState(false);
   const navigate = (next: View) => { setDashboardCreate(false); setView(next); };
@@ -225,5 +228,5 @@ export function App({ onSignOut }: { onSignOut?: () => Promise<void> } = {}) {
     if (view === 'settings') return <SettingsWorkspace />;
     return <ReviewWorkspace close={() => setView('dashboard')} />;
   };
-  return <div className="app-shell"><Sidebar view={view} setView={navigate} onSignOut={onSignOut ? () => { void onSignOut(); } : undefined} /><div className="workspace"><div className="view-transition" key={view}>{renderView()}</div></div></div>;
+  return <div className="app-shell"><Sidebar view={view} setView={navigate} identity={identity} onSignOut={onSignOut} /><div className="workspace"><div className="view-transition" key={view}>{renderView()}</div></div></div>;
 }

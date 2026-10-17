@@ -1,9 +1,15 @@
 import { useEffect, useState, type FormEvent, type ReactNode } from 'react';
 import { ArrowRight, Check, LoaderCircle, LockKeyhole } from 'lucide-react';
-import { cloudbaseAuth, cloudbaseConfigured } from './cloudbase';
+import { cloudbaseAuth, cloudbaseConfigured, loadCloudbaseIdentity } from './cloudbase';
+
+export type SignedInIdentity = {
+  displayName: string;
+  workspaceName: string;
+  role: string;
+};
 
 type AuthGateProps = {
-  children: (session: { signOut: () => Promise<void> }) => ReactNode;
+  children: (session: { identity: SignedInIdentity; signOut: () => Promise<void> }) => ReactNode;
 };
 
 export function AuthGate({ children }: AuthGateProps) {
@@ -12,6 +18,11 @@ export function AuthGate({ children }: AuthGateProps) {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [identity, setIdentity] = useState<SignedInIdentity | null>(null);
+
+  const loadIdentity = async () => {
+    setIdentity(await loadCloudbaseIdentity());
+  };
 
   useEffect(() => {
     if (!cloudbaseAuth) {
@@ -20,14 +31,22 @@ export function AuthGate({ children }: AuthGateProps) {
     }
 
     let active = true;
-    void cloudbaseAuth.getSession().then(({ data }) => {
-      if (active) setStatus(data?.session ? 'signed-in' : 'signed-out');
+    void cloudbaseAuth.getSession().then(async ({ data }) => {
+      if (!active) return;
+      if (!data?.session) return setStatus('signed-out');
+      await loadIdentity();
+      if (active) setStatus('signed-in');
     }).catch(() => {
-      if (active) setStatus('signed-out');
+      if (active) {
+        setError('无法读取当前账号的 DayStep 工作空间。');
+        setStatus('signed-out');
+      }
     });
 
     const { data } = cloudbaseAuth.onAuthStateChange((_event, session) => {
-      if (active) setStatus(session ? 'signed-in' : 'signed-out');
+      if (!active || session) return;
+      setIdentity(null);
+      setStatus('signed-out');
     });
     return () => {
       active = false;
@@ -47,6 +66,7 @@ export function AuthGate({ children }: AuthGateProps) {
       });
       if (authError) throw authError;
       if (!data?.session) throw new Error('登录未返回有效会话，请稍后重试。');
+      await loadIdentity();
       setStatus('signed-in');
       setPassword('');
     } catch (reason) {
@@ -58,17 +78,19 @@ export function AuthGate({ children }: AuthGateProps) {
 
   const signOut = async () => {
     if (!cloudbaseAuth) return;
+    setIdentity(null);
+    setStatus('signed-out');
     try {
       await cloudbaseAuth.signOut();
-    } finally {
-      setStatus('signed-out');
+    } catch {
+      setError('云端会话退出较慢；当前页面已锁定，请稍后重试登录。');
     }
   };
 
   if (status === 'checking') {
     return <main className="auth-loading"><LoaderCircle /><span>正在验证安全会话</span></main>;
   }
-  if (status === 'signed-in') return children({ signOut });
+  if (status === 'signed-in' && identity) return children({ identity, signOut });
 
   return <main className="auth-page">
     <section className="auth-intro">

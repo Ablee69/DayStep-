@@ -6,5 +6,5 @@ import { App } from './App';
 import { AuthGate } from './AuthGate';
 
 createRoot(document.getElementById('root')!).render(
-  <StrictMode><AuthGate>{({ signOut }) => <App onSignOut={signOut} />}</AuthGate></StrictMode>,
+  <StrictMode><AuthGate>{({ identity, signOut }) => <App identity={identity} onSignOut={signOut} />}</AuthGate></StrictMode>,
 );

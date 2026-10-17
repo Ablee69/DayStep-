@@ -140,3 +140,5 @@ Status: staging database foundation and API readiness integration complete.
 - Enabled username/password authentication, provisioned the CloudBase publishable key, and added a real session gate plus sign-out flow to the desktop Web app.
 - Frontend CloudBase values are loaded from ignored local environment files; only a blank `.env.example` contract is committed.
 - Created the staging administrator identity and mapped its CloudBase UID to one active DayStep user, custom auth identity, and profile using an idempotent transaction; a focused read verified the mapping.
+- Applied migration `20261017000100_identity_read_boundary`: authenticated users can only read their own identity/profile and workspaces where they are members; browser writes remain denied by RLS.
+- Seeded an idempotent personal administrator workspace and verified the real Web session resolves its cloud profile, workspace, and owner membership.
