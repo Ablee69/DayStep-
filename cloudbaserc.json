@@ -1,0 +1,6 @@
+{
+  "envId": "daystep-staging-d1fnnxhj063ec6ce",
+  "cloudrun": {
+    "name": "daystep-api-staging"
+  }
+}

@@ -48,4 +48,35 @@ describe('DayStep API foundation', () => {
     expect(response.json()).toEqual({ status: 'not_ready', checks: { database: 'unavailable' } });
     expect(response.body).not.toContain('secret connection detail');
   });
+
+  it('rejects identity requests without verified CloudBase context', async () => {
+    const app = buildApp(loadConfig({ NODE_ENV: 'test' })); apps.push(app);
+    const response = await app.inject({ method: 'GET', url: '/v1/me' });
+    expect(response.statusCode).toBe(401);
+    expect(response.json()).toEqual({ error: 'unauthorized' });
+  });
+
+  it('returns only the verified CloudBase uid', async () => {
+    const app = buildApp(loadConfig({ NODE_ENV: 'test' })); apps.push(app);
+    const context = Buffer.from(JSON.stringify({ uid: 'cloudbase-user-1', accessToken: 'must-not-leak' })).toString('base64');
+    const response = await app.inject({
+      method: 'GET',
+      url: '/v1/me',
+      headers: { 'x-cloudbase-context': context },
+    });
+    expect(response.statusCode).toBe(200);
+    expect(response.json()).toEqual({ uid: 'cloudbase-user-1' });
+    expect(response.body).not.toContain('must-not-leak');
+  });
+
+  it('rejects malformed CloudBase context without exposing parser details', async () => {
+    const app = buildApp(loadConfig({ NODE_ENV: 'test' })); apps.push(app);
+    const response = await app.inject({
+      method: 'GET',
+      url: '/v1/me',
+      headers: { 'x-cloudbase-context': 'not-valid-base64-json' },
+    });
+    expect(response.statusCode).toBe(401);
+    expect(response.json()).toEqual({ error: 'unauthorized' });
+  });
 });

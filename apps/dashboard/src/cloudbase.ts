@@ -22,13 +22,32 @@ export type CloudbaseIdentity = {
   role: string;
 };
 
+function getApiBaseUrl() {
+  if (import.meta.env.VITE_DAYSTEP_API_BASE_URL) return import.meta.env.VITE_DAYSTEP_API_BASE_URL.replace(/\/$/, '');
+  if (!env) return null;
+  const region = import.meta.env.VITE_CLOUDBASE_REGION || 'ap-shanghai';
+  return `https://${env}.${region}.app.tcloudbase.com/api`;
+}
+
 function requiredString(value: unknown, field: string) {
   if (typeof value !== 'string' || !value.trim()) throw new Error(`账号资料缺少 ${field}。`);
   return value;
 }
 
 export async function loadCloudbaseIdentity(): Promise<CloudbaseIdentity> {
-  if (!cloudbaseApp) throw new Error('CloudBase 数据库尚未配置。');
+  if (!cloudbaseApp || !cloudbaseAuth) throw new Error('CloudBase 数据库尚未配置。');
+  const apiBaseUrl = getApiBaseUrl();
+  if (!apiBaseUrl) throw new Error('DayStep API 尚未配置。');
+  const { accessToken } = await cloudbaseAuth.getAccessToken();
+  if (!accessToken) throw new Error('当前登录会话无效，请重新登录。');
+  const identityResponse = await fetch(`${apiBaseUrl}/v1/me`, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+  if (!identityResponse.ok) throw new Error('无法验证当前账号，请重新登录。');
+  const verifiedIdentity = await identityResponse.json() as { uid?: unknown };
+  if (typeof verifiedIdentity.uid !== 'string' || !verifiedIdentity.uid) {
+    throw new Error('云端身份响应无效，请稍后重试。');
+  }
   const db = cloudbaseApp.rdb();
   const [profileResult, workspaceResult, membershipResult] = await Promise.all([
     db.from('profiles').select('display_name').limit(1).single(),

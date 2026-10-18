@@ -2,6 +2,21 @@ import Fastify from 'fastify';
 import type { ApiConfig } from './config.js';
 import type { DatabaseProbe } from './db/probe.js';
 
+type CloudbaseContext = {
+  uid?: unknown;
+};
+
+function readCloudbaseUid(encodedContext: string | string[] | undefined) {
+  if (typeof encodedContext !== 'string' || !encodedContext) return null;
+
+  try {
+    const context = JSON.parse(Buffer.from(encodedContext, 'base64').toString('utf8')) as CloudbaseContext;
+    return typeof context.uid === 'string' && context.uid.trim() ? context.uid : null;
+  } catch {
+    return null;
+  }
+}
+
 export function buildApp(config: ApiConfig, databaseProbe?: DatabaseProbe) {
   const app = Fastify({ logger: config.nodeEnv !== 'test', trustProxy: true });
   if (databaseProbe) app.addHook('onClose', () => databaseProbe.close());
@@ -18,6 +33,11 @@ export function buildApp(config: ApiConfig, databaseProbe?: DatabaseProbe) {
       app.log.error({ err: error }, 'Database readiness probe failed');
       return reply.code(503).send({ status: 'not_ready', checks: { database: 'unavailable' } });
     }
+  });
+  app.get('/v1/me', async (request, reply) => {
+    const uid = readCloudbaseUid(request.headers['x-cloudbase-context']);
+    if (!uid) return reply.code(401).send({ error: 'unauthorized' });
+    return reply.code(200).send({ uid });
   });
   return app;
 }

@@ -73,7 +73,7 @@ Status: local release candidate complete.
 ## Verification
 
 - All workspace TypeScript checks pass.
-- 19 focused tests pass: domain 8, dashboard 5, mobile storage, scoring, profile, and export 6.
+- 24 focused tests pass: domain 8, API 8, dashboard 5, and mobile 6.
 - Dashboard production build passes.
 - Taro H5 and WeChat mini-program production builds pass.
 - H5 reports one non-blocking 300 KiB entrypoint size warning.
@@ -142,3 +142,8 @@ Status: staging database foundation and API readiness integration complete.
 - Created the staging administrator identity and mapped its CloudBase UID to one active DayStep user, custom auth identity, and profile using an idempotent transaction; a focused read verified the mapping.
 - Applied migration `20261017000100_identity_read_boundary`: authenticated users can only read their own identity/profile and workspaces where they are members; browser writes remain denied by RLS.
 - Seeded an idempotent personal administrator workspace and verified the real Web session resolves its cloud profile, workspace, and owner membership.
+- Added the protected `GET /v1/me` identity boundary. The Web app now obtains its session Access Token, calls the authenticated HTTP gateway, and only then loads its RLS-scoped profile and workspace.
+- Deployed CloudRun release `daystep-api-staging-007`; image build, container readiness, and 100% traffic promotion completed successfully.
+- Enabled CloudBase gateway authentication on both CloudRun direct domains and the environment `/api` route. Anonymous calls are rejected with `MISSING_CREDENTIALS`; the public static hosting route remains unchanged.
+- Published the updated dashboard bundle to CloudBase static hosting and verified the uploaded index, JavaScript, and CSS objects.
+- Added focused API coverage for missing, malformed, and valid CloudBase context while ensuring credential-bearing context is never echoed.
