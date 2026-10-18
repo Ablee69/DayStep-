@@ -147,3 +147,5 @@ Status: staging database foundation and API readiness integration complete.
 - Enabled CloudBase gateway authentication on both CloudRun direct domains and the environment `/api` route. Anonymous calls are rejected with `MISSING_CREDENTIALS`; the public static hosting route remains unchanged.
 - Published the updated dashboard bundle to CloudBase static hosting and verified the uploaded index, JavaScript, and CSS objects.
 - Added focused API coverage for missing, malformed, and valid CloudBase context while ensuring credential-bearing context is never echoed.
+- Added an explicit CORS allowlist and authenticated-request preflight handling for the local dashboard and staging static-hosting origin.
+- Deployed CloudRun release `daystep-api-staging-009` with 100% traffic and verified the environment gateway returns HTTP 204 with the expected CORS headers for the local dashboard origin.

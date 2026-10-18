@@ -79,4 +79,37 @@ describe('DayStep API foundation', () => {
     expect(response.statusCode).toBe(401);
     expect(response.json()).toEqual({ error: 'unauthorized' });
   });
+
+  it('accepts browser preflight requests from an allowed origin', async () => {
+    const app = buildApp(loadConfig({
+      NODE_ENV: 'test',
+      CORS_ALLOWED_ORIGINS: 'http://127.0.0.1:4180',
+    })); apps.push(app);
+    const response = await app.inject({
+      method: 'OPTIONS',
+      url: '/v1/me',
+      headers: {
+        origin: 'http://127.0.0.1:4180',
+        'access-control-request-method': 'GET',
+        'access-control-request-headers': 'authorization',
+      },
+    });
+    expect(response.statusCode).toBe(204);
+    expect(response.headers['access-control-allow-origin']).toBe('http://127.0.0.1:4180');
+    expect(response.headers['access-control-allow-headers']).toContain('Authorization');
+  });
+
+  it('does not grant cross-origin access to an unknown origin', async () => {
+    const app = buildApp(loadConfig({
+      NODE_ENV: 'test',
+      CORS_ALLOWED_ORIGINS: 'https://daystep.example.com',
+    })); apps.push(app);
+    const response = await app.inject({
+      method: 'GET',
+      url: '/health',
+      headers: { origin: 'https://unknown.example.com' },
+    });
+    expect(response.statusCode).toBe(200);
+    expect(response.headers['access-control-allow-origin']).toBeUndefined();
+  });
 });

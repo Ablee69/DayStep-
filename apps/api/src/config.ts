@@ -8,6 +8,7 @@ export type ApiConfig = {
   databaseProbeTimeoutMs: number;
   cosBucket?: string;
   cosRegion?: string;
+  corsAllowedOrigins: string[];
 };
 
 export function loadConfig(env: NodeJS.ProcessEnv = process.env): ApiConfig {
@@ -24,5 +25,9 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): ApiConfig {
     databaseUrl: env.DATABASE_URL, cloudbaseEnvId: env.CLOUDBASE_ENV_ID,
     cloudbaseApiKey: env.CLOUDBASE_APIKEY, databaseProbeTimeoutMs,
     cosBucket: env.COS_BUCKET, cosRegion: env.COS_REGION,
+    corsAllowedOrigins: (env.CORS_ALLOWED_ORIGINS || 'http://127.0.0.1:4180,http://localhost:4180')
+      .split(',')
+      .map((origin) => origin.trim())
+      .filter(Boolean),
   };
 }
