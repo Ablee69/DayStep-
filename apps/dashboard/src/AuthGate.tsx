@@ -36,9 +36,9 @@ export function AuthGate({ children }: AuthGateProps) {
       if (!data?.session) return setStatus('signed-out');
       await loadIdentity();
       if (active) setStatus('signed-in');
-    }).catch(() => {
+    }).catch((reason: unknown) => {
       if (active) {
-        setError('无法读取当前账号的 DayStep 工作空间。');
+        setError(reason instanceof Error ? reason.message : '无法读取当前账号的 DayStep 工作空间。');
         setStatus('signed-out');
       }
     });
