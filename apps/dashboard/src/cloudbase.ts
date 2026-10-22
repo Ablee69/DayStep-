@@ -17,6 +17,8 @@ export const cloudbaseApp = cloudbaseConfigured
 export const cloudbaseAuth = cloudbaseApp?.auth ?? null;
 
 export type CloudbaseIdentity = {
+  userId: string;
+  workspaceId: string;
   displayName: string;
   workspaceName: string;
   role: string;
@@ -31,7 +33,7 @@ export async function loadCloudbaseIdentity(): Promise<CloudbaseIdentity> {
   if (!cloudbaseApp || !cloudbaseAuth) throw new Error('CloudBase 数据库尚未配置。');
   const db = cloudbaseApp.rdb();
   const [profileResult, workspaceResult, membershipResult] = await Promise.all([
-    db.from('profiles').select('display_name').limit(1).single(),
+    db.from('profiles').select('user_id,display_name').limit(1).single(),
     db.from('workspaces').select('id,name,type').limit(1).single(),
     db.from('workspace_members').select('workspace_id,role').limit(1).single(),
   ]);
@@ -49,6 +51,8 @@ export async function loadCloudbaseIdentity(): Promise<CloudbaseIdentity> {
     throw new Error('当前账号尚未关联 DayStep 工作空间，请联系管理员。');
   }
   return {
+    userId: requiredString(profileResult.data.user_id, '用户标识'),
+    workspaceId: requiredString(membershipResult.data.workspace_id, '工作空间标识'),
     displayName: requiredString(profileResult.data.display_name, '显示名称'),
     workspaceName: requiredString(workspaceResult.data.name, '工作空间名称'),
     role: requiredString(membershipResult.data.role, '成员角色'),

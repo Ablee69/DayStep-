@@ -3,6 +3,8 @@ import { ArrowRight, Check, LoaderCircle, LockKeyhole } from 'lucide-react';
 import { cloudbaseAuth, cloudbaseConfigured, loadCloudbaseIdentity } from './cloudbase';
 
 export type SignedInIdentity = {
+  userId: string;
+  workspaceId: string;
   displayName: string;
   workspaceName: string;
   role: string;

@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import type { Assignment } from '@daystep/domain';
 import type { SignedInIdentity } from './AuthGate';
+import { TeacherProgressWorkspace } from './TeacherProgressWorkspace';
 
 type View = 'dashboard' | 'students' | 'plans' | 'goals' | 'review' | 'feedback' | 'settings';
 type DashboardPanel = 'new-plan' | 'students' | 'insight' | 'student' | 'notifications' | null;
@@ -157,7 +158,7 @@ function ReviewWorkspace({ close }: { close: () => void }) {
   </main></>;
 }
 
-function StudentsWorkspace({ openReview }: { openReview: () => void }) {
+function DemoStudentsWorkspace({ openReview }: { openReview: () => void }) {
   const [query, setQuery] = useState('');
   const [selected, setSelected] = useState(students[0].name);
   const [inviteEmail, setInviteEmail] = useState('');
@@ -176,7 +177,7 @@ function PlansWorkspace({ createPlan }: { createPlan: () => void }) {
   return <><Topbar title="计划管理" query={query} onQueryChange={setQuery} onNewPlan={createPlan} /><main className="management-page"><header className="page-heading"><div><span className="eyebrow">计划中心</span><h1>学习计划</h1><p>统一管理手动创建和标准导入的计划。</p></div><button className="page-primary" onClick={createPlan}>＋ 新建计划</button></header><nav className="management-tabs"><button className={status === 'all' ? 'active' : ''} onClick={() => setStatus('all')}>全部 {projects.length}</button><button className={status === 'active' ? 'active' : ''} onClick={() => setStatus('active')}>进行中 {projects.filter((item) => item.progress < 100).length}</button><button className={status === 'done' ? 'active' : ''} onClick={() => setStatus('done')}>已完成 {projects.filter((item) => item.progress === 100).length}</button></nav><section className="plan-table"><div className="plan-table-head"><span>计划与学生</span><span>进度</span><span>目标日期</span><span>本周状态</span></div>{visible.map((plan) => <article key={plan.id}><div><span className="project-avatar" style={{ background: plan.color }}>{plan.name.at(0)}</span><span><strong>{plan.title}</strong><small>{plan.name} · {plan.course}</small></span></div><div className="table-progress"><span>{plan.progress}%</span><div className="bar"><i style={{ width: `${plan.progress}%` }} /></div></div><time>{plan.deadline || '2026-12-31'}</time><span className={plan.attention ? 'status-chip attention' : 'status-chip'}>{plan.attention ? '需要关注' : '按计划推进'}</span></article>)}{visible.length === 0 && <div className="management-empty"><Inbox /><strong>没有匹配的计划</strong><span>更换搜索词或状态筛选</span></div>}</section></main></>;
 }
 
-function GoalsWorkspace() {
+function DemoGoalsWorkspace() {
   const projects = readStored<StudentProject[]>(PROJECTS_KEY, initialProjects);
   const [expanded, setExpanded] = useState(projects[0]?.id || '');
   const overall = projects.length ? Math.round(projects.reduce((sum, item) => sum + item.progress, 0) / projects.length) : 0;
@@ -216,14 +217,14 @@ function SettingsWorkspace() {
 }
 
 export function App({ identity, onSignOut }: { identity?: SignedInIdentity; onSignOut?: () => Promise<void> } = {}) {
-  const [view, setView] = useState<View>('dashboard');
+  const [view, setView] = useState<View>(identity ? 'students' : 'dashboard');
   const [dashboardCreate, setDashboardCreate] = useState(false);
   const navigate = (next: View) => { setDashboardCreate(false); setView(next); };
   const renderView = () => {
     if (view === 'dashboard') return <TeacherDashboard key={dashboardCreate ? 'create' : 'default'} createOnOpen={dashboardCreate} openReview={() => navigate('review')} />;
-    if (view === 'students') return <StudentsWorkspace openReview={() => setView('review')} />;
+    if (view === 'students') return identity ? <TeacherProgressWorkspace identity={identity} mode="students" /> : <main className="teacher-live-loading"><strong>请先登录教师账号</strong></main>;
     if (view === 'plans') return <PlansWorkspace createPlan={() => { setDashboardCreate(true); setView('dashboard'); }} />;
-    if (view === 'goals') return <GoalsWorkspace />;
+    if (view === 'goals') return identity ? <TeacherProgressWorkspace identity={identity} mode="goals" /> : <main className="teacher-live-loading"><strong>请先登录教师账号</strong></main>;
     if (view === 'feedback') return <FeedbackWorkspace openReview={() => setView('review')} />;
     if (view === 'settings') return <SettingsWorkspace />;
     return <ReviewWorkspace close={() => setView('dashboard')} />;

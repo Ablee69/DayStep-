@@ -149,3 +149,16 @@ Status: staging database foundation and API readiness integration complete.
 - Added focused API coverage for missing, malformed, and valid CloudBase context while ensuring credential-bearing context is never echoed.
 - Added an explicit CORS allowlist and authenticated-request preflight handling for the local dashboard and staging static-hosting origin.
 - Deployed CloudRun release `daystep-api-staging-009` with 100% traffic and verified the environment gateway returns HTTP 204 with the expected CORS headers for the local dashboard origin.
+
+## Phase H - Teacher goal supervision
+
+Status: staging security boundary applied; dashboard release candidate verified locally.
+
+- Replaced the desktop Student and Goal workspaces with CloudBase PostgreSQL data reads for authorized students, goals, milestones, projects, tasks, steps, task instances, and check-in events.
+- Progress is derived from persisted task and completed-step evidence; the live workspaces no longer invent student names, scores, or completion percentages.
+- Teachers can edit goal title, dates, and lifecycle status with optimistic version checks; concurrent changes are rejected instead of overwritten.
+- The teacher workspace refreshes after saves, on window focus, and every 15 seconds while visible.
+- Applied migration `20261022000100_teacher_goal_management` to staging with role-aware RLS, focused read/update grants, supporting indexes, and an audit trigger for goal updates.
+- Student membership visibility is now restricted to self unless the current member is a workspace owner or teacher; students cannot enumerate peers through `workspace_members`.
+- Seven dashboard tests pass and the production dashboard build succeeds.
+- Browser acceptance with the real administrator session verified the cloud-backed empty state. The staging workspace currently has one owner and no student members, so multi-student progress and goal-edit acceptance still require provisioned test student accounts and records.
