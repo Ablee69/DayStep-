@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import type { Assignment } from '@daystep/domain';
 import type { SignedInIdentity } from './AuthGate';
+import { StudentWorkspace } from './StudentWorkspace';
 import { TeacherProgressWorkspace } from './TeacherProgressWorkspace';
 
 type View = 'dashboard' | 'students' | 'plans' | 'goals' | 'review' | 'feedback' | 'settings';
@@ -51,6 +52,10 @@ export function isValidScore(value: string) {
   if (value.trim() === '') return false;
   const score = Number(value);
   return Number.isFinite(score) && score >= 0 && score <= 100;
+}
+
+export function isTeacherRole(role: string) {
+  return role === 'owner' || role === 'teacher';
 }
 
 function Sidebar({ view, setView, identity, onSignOut }: { view: View; setView: (view: View) => void; identity?: SignedInIdentity; onSignOut?: () => Promise<void> }) {
@@ -219,6 +224,7 @@ function SettingsWorkspace() {
 export function App({ identity, onSignOut }: { identity?: SignedInIdentity; onSignOut?: () => Promise<void> } = {}) {
   const [view, setView] = useState<View>(identity ? 'students' : 'dashboard');
   const [dashboardCreate, setDashboardCreate] = useState(false);
+  if (identity && !isTeacherRole(identity.role)) return <StudentWorkspace identity={identity} onSignOut={onSignOut} />;
   const navigate = (next: View) => { setDashboardCreate(false); setView(next); };
   const renderView = () => {
     if (view === 'dashboard') return <TeacherDashboard key={dashboardCreate ? 'create' : 'default'} createOnOpen={dashboardCreate} openReview={() => navigate('review')} />;

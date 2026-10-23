@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { filterStudents, isValidScore } from './App';
+import { filterStudents, isTeacherRole, isValidScore } from './App';
 
 describe('filterStudents', () => {
   it('matches a student name or course', () => {
@@ -27,5 +27,14 @@ describe('isValidScore', () => {
     expect(isValidScore('A')).toBe(false);
     expect(isValidScore('-1')).toBe(false);
     expect(isValidScore('101')).toBe(false);
+  });
+});
+
+describe('isTeacherRole', () => {
+  it('allows only workspace owners and teachers into the teacher shell', () => {
+    expect(isTeacherRole('owner')).toBe(true);
+    expect(isTeacherRole('teacher')).toBe(true);
+    expect(isTeacherRole('student')).toBe(false);
+    expect(isTeacherRole('member')).toBe(false);
   });
 });

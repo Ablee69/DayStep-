@@ -1,6 +1,6 @@
 # DayStep V6.2 Progress
 
-Last updated: 2026-10-16
+Last updated: 2026-10-23
 
 ## Phase A - Six core UI screens
 
@@ -161,4 +161,16 @@ Status: staging security boundary applied; dashboard release candidate verified 
 - Applied migration `20261022000100_teacher_goal_management` to staging with role-aware RLS, focused read/update grants, supporting indexes, and an audit trigger for goal updates.
 - Student membership visibility is now restricted to self unless the current member is a workspace owner or teacher; students cannot enumerate peers through `workspace_members`.
 - Seven dashboard tests pass and the production dashboard build succeeds.
-- Browser acceptance with the real administrator session verified the cloud-backed empty state. The staging workspace currently has one owner and no student members, so multi-student progress and goal-edit acceptance still require provisioned test student accounts and records.
+- Browser acceptance with the real administrator session verified the cloud-backed empty state. The staging workspace now has one owner and one student; goal-edit acceptance still requires a real student goal record.
+
+## Phase I - Student cloud workspace
+
+Status: local release candidate complete; staging RLS and membership acceptance verified.
+
+- Provisioned the active `daystep-student-01` staging account and mapped it to the existing DayStep workspace with the `student` role.
+- Added role-aware application routing: owners and teachers retain the management shell, while students cannot enter teacher navigation or management views.
+- Added a student cloud workspace that reads only the signed-in student's RLS-scoped goals, milestones, projects, tasks, steps, and completion evidence.
+- The student workspace includes real empty, loading, error, refresh, and responsive states and never fabricates goals or progress.
+- Staging inspection verified the student's active membership and the owner/self-scoped RLS policies across goals, milestones, projects, tasks, steps, task instances, and check-ins.
+- Dashboard verification now passes 8 focused tests, and the production dashboard build succeeds.
+- A second student account is currently blocked by the CloudBase application-user quota; no database-only placeholder account was created.
